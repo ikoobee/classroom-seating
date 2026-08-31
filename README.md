@@ -27,7 +27,7 @@ Import a class roster, tune the rule weights, and the engine produces a seating 
 - 🔄 **Five rotations** — shift left / right, rows back / forward, serpentine; locked seats are protected, rotation history is kept
 - 🤝 **Relation constraints** — friends must be deskmates, blacklists keep students apart (optionally including front-back neighbors); unsatisfiable requests are reported explicitly
 - 🏫 **Aisle support** — mark any column as an aisle (a natural deskmate separator); 4 built-in classroom templates
-- 📥 **Excel import** — automatic Chinese/English header detection + column-mapping preview before confirming; all 9 fields supported; import template downloadable
+- 📥 **Excel import** — automatic Chinese/English header detection + column-mapping preview before confirming; all 9 fields supported; downloadable template with demo rows and a dedicated field-notes sheet
 - 📤 **Multi-format export** — Excel (two sheets), print-ready PNG seating chart, full JSON backup
 - 📈 **Statistics dashboard** — gender donut, height / vision / grade / personality bars (pure SVG) + row × column heatmap
 - ↩️ **Undo / redo** — command pattern covering arrange / swap / import / rotate (`Ctrl+Z` / `Ctrl+Y`)

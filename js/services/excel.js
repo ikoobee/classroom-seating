@@ -1,11 +1,13 @@
 /**
- * Excel import/export: Chinese/English header detection + column mapping preview + two-sheet export + template download
+ * Excel import/export: Chinese/English header detection + column mapping preview + two-sheet export + two-sheet template download
  * All 9 fields are mapped on import
  */
 import { loadXlsx } from './vendor.js';
 import { normalizeStudentInput } from '../core/models.js';
 import { activeSeats } from '../core/grid.js';
-import { ANNOTATION_COLORS } from '../core/constants.js';
+import {
+  GENDERS, HEIGHTS, VISIONS, ACADEMICS, PERSONALITIES, ABILITIES, DUTIES, ANNOTATION_COLORS,
+} from '../core/constants.js';
 
 /** field -> Chinese/English header aliases */
 const COLUMN_ALIASES = {
@@ -133,27 +135,38 @@ export async function exportExcel(state) {
   XLSX.writeFile(wb, `排座数据_${dateStr()}.xlsx`);
 }
 
-/** Download the import template (with sample rows and field notes) */
+/**
+ * Download the import template — two sheets:
+ *   1. 导入模板: header + demo rows only (ready to fill in)
+ *   2. 字段说明: field notes generated from the same constants the app
+ *      validates against, so the notes can never drift from the real rules
+ */
 export async function downloadTemplate() {
   const XLSX = await loadXlsx();
   const wb = XLSX.utils.book_new();
-  const rows = [
+
+  const demo = [
     ['姓名', '性别', '身高', '视力', '成绩', '性格', '特长', '职务', '标注颜色'],
     ['张三', '男', '矮', '近视', '优秀', '活跃', '体育', '体育委员', '重点关注'],
-    ['李四', '女', '中', '正常', '良好', '安静', '', '', ''],
-    ['王五', '男', '高', '良好', '待提高', '调皮', '学习', '', '需要注意'],
-    [],
-    ['字段说明：'],
-    ['性别：男/女'],
-    ['身高：高/中/矮'],
-    ['视力：近视/正常/良好'],
-    ['成绩：优秀/良好/中等/待提高'],
-    ['性格：活跃/安静/调皮/文静/领导/助人'],
-    ['特长：学习/体育/艺术/组织/帮助/需要（可空）'],
-    ['职务：班长/学习委员/体育委员等（可多个，用顿号分隔，可空）'],
-    ['标注颜色：重点关注/需要注意/一般关注/表现良好/特殊情况（可空）'],
+    ['李四', '女', '中', '正常', '良好', '安静', '舞蹈', '', ''],
+    ['王五', '男', '高', '良好', '待提高', '调皮', '信息技术', '', '需要注意'],
   ];
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(rows), '导入模板');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(demo), '导入模板');
+
+  const notes = [
+    ['字段', '可选值', '必填', '说明'],
+    ['姓名', '—', '是', '学生姓名，唯一必填字段'],
+    ['性别', GENDERS.join(' / '), '否', '留空默认「男」；也接受 m/f'],
+    ['身高', HEIGHTS.join(' / '), '否', '留空默认「中」；用于身高优化'],
+    ['视力', VISIONS.join(' / '), '否', '留空默认「正常」；近视优先安排前排'],
+    ['成绩', ACADEMICS.join(' / '), '否', '留空默认「中等」；用于成绩分层'],
+    ['性格', PERSONALITIES.join(' / '), '否', '留空默认「安静」；用于性格平衡'],
+    ['特长', ABILITIES.join(' / '), '否', '单选，留空表示暂无；用于能力互补'],
+    ['职务', DUTIES.join(' / '), '否', '可多个，用顿号分隔；用于避免同职务相邻'],
+    ['标注颜色', ANNOTATION_COLORS.map(c => c.label).join(' / '), '否', '学生关注类型标注，留空表示无'],
+  ];
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(notes), '字段说明');
+
   XLSX.writeFile(wb, '学生导入模板.xlsx');
 }
 

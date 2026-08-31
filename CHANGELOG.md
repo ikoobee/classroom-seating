@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Import template reworked into two sheets: demo rows only on sheet 1, field notes on a dedicated sheet 2, generated from the app's own constants (all 17 ability values now listed, matching the extended ability design)
+
 - Initial public release: seating engine with hard constraints (locked seats, friends-as-deskmates, blacklist separation) and 10 weighted soft rules, optimized by hill climbing + simulated annealing
 - Five fair-rotation modes (shift left / right, rows back / forward, serpentine) with locked-seat protection and rotation history
 - Multi-candidate plans: generate N seeds, compare scores with mini previews, apply in one click
