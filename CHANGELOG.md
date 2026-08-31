@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-08-31
+
 ### Changed
 
 - Ability list cleaned up from 17 to 13 values: removed 学习 (duplicates the grade field), 艺术 (overlaps the concrete art talents), 帮助 (a personality trait — already covered by "助人"), and 需要 (a support-needs flag, not a talent). Every remaining value is a concrete, self-explanatory talent; existing data holding removed values degrades gracefully to empty on load
