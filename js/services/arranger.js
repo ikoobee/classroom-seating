@@ -1,9 +1,9 @@
 /**
  * Arrangement orchestration: bridges the engine and the UI (single-solution arrangement / candidate solutions / rotation / score badge upkeep)
  */
-import { generateSolution, generateCandidates, scoreAssignment } from '../core/engine/engine.js';
-import { activeSeats } from '../core/grid.js';
-import { applyRotation, ROTATION_MODES } from '../core/rotation.js';
+import { generateSolution, generateCandidates, scoreAssignment } from '@ikoobee/seating-core';
+import { activeSeats } from '@ikoobee/seating-core';
+import { applyRotation, ROTATION_MODES } from '@ikoobee/seating-core';
 import { setAssignmentCmd } from '../store/history.js';
 import { withFlip } from '../ui/interactions/flip.js';
 import { openModal, closeModal } from '../ui/components/modal.js';

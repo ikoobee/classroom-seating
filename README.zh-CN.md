@@ -2,7 +2,7 @@
 
 ![CI](https://github.com/ikoobee/classroom-seating/actions/workflows/ci.yml/badge.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Version](https://img.shields.io/badge/version-1.0.0-green.svg)
+![Version](https://img.shields.io/badge/version-1.1.0-green.svg)
 ![Zero build](https://img.shields.io/badge/zero--build-pure--static-orange.svg)
 
 [English](README.md) | 简体中文
@@ -68,16 +68,18 @@ node tests/_node.mjs
 
 ```
 classroom-seating/
-├── index.html              # 唯一页面
+├── index.html              # 唯一页面（importmap 将 @ikoobee/seating-core 指向本地包）
 ├── css/                    # 样式（主题变量在 base.css）
+├── packages/
+│   └── seating-core/       # 排座引擎独立 npm 包（@ikoobee/seating-core）
+│       └── src/            # 纯逻辑层（无 DOM/IO 依赖，可独立测试）
+│           ├── engine/     # 排座引擎：context/constraints/scorers/evaluate/
+│           │               #   construct/moves/optimize/precheck/engine
+│           ├── rotation.js # 五种轮换（循环置换，锁定保护）
+│           ├── grid.js     # 网格几何（过道/同桌边/前后边/前排区）
+│           └── datagen / models / constants / relations / stats / rng
 ├── js/
 │   ├── main.js / app.js    # 入口装配 / App 协调
-│   ├── core/               # 纯逻辑层（无 DOM/IO 依赖，可独立测试）
-│   │   ├── engine/         # 排座引擎：context/constraints/scorers/evaluate/
-│   │   │                   #   construct/moves/optimize/precheck/engine
-│   │   ├── rotation.js     # 五种轮换（循环置换，锁定保护）
-│   │   ├── grid.js         # 网格几何（过道/同桌边/前后边/前排区）
-│   └── datagen / models / constants / relations / stats / rng
 │   ├── store/              # 迷你 store + actions/reducers + 命令式 history
 │   ├── services/           # storage（防抖+配额降级）/ logger（索引/详情分离）/
 │   │                       #   arranger（排座编排）/ excel / image / backup / vendor
@@ -86,6 +88,8 @@ classroom-seating/
 ├── assets/vendor/          # xlsx（本地副本优先，加载失败回退 CDN）
 └── tests/                  # runner.html 单元测试 / e2e.html 冒烟测试 / _node.mjs 无头运行
 ```
+
+引擎以独立 npm 包 **`@ikoobee/seating-core`** 提供——应用自身通过 import map 引用它（站点保持零构建），第三方项目可直接依赖发布包。
 
 ## 🎯 排座引擎说明
 

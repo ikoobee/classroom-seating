@@ -3,7 +3,7 @@
  * mount the canvas on the page for visual screenshot inspection
  */
 import { App } from '../js/app.js';
-import { generateDemoStudents } from '../js/core/datagen.js';
+import { generateDemoStudents } from '@ikoobee/seating-core';
 import { replaceAllCmd, toggleLockCmd } from '../js/store/history.js';
 
 const out = [];

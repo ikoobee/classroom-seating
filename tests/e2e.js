@@ -4,9 +4,9 @@
  * verified headlessly via dump-dom
  */
 import { App } from '../js/app.js';
-import { generateDemoStudents } from '../js/core/datagen.js';
+import { generateDemoStudents } from '@ikoobee/seating-core';
 import { replaceAllCmd, toggleLockCmd } from '../js/store/history.js';
-import { activeSeats } from '../js/core/grid.js';
+import { activeSeats } from '@ikoobee/seating-core';
 
 const lines = [];
 const pass = (name) => lines.push(`E2E-PASS ${name}`);

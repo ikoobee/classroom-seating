@@ -2,9 +2,9 @@
  * Full data backup/restore (JSON files)
  */
 import { initialState } from '../store/reducers.js';
-import { normalizeRelations } from '../core/relations.js';
-import { normalizeLayout } from '../core/grid.js';
-import { defaultRules } from '../core/constants.js';
+import { normalizeRelations } from '@ikoobee/seating-core';
+import { normalizeLayout } from '@ikoobee/seating-core';
+import { defaultRules } from '@ikoobee/seating-core';
 
 export function exportCompleteData(state) {
   return JSON.stringify({

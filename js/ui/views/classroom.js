@@ -5,8 +5,8 @@
 import { h, qs, qsa, clearEl, bindTooltip } from '../dom.js';
 import { withFlip } from '../interactions/flip.js';
 import { swapCmd, toggleLockCmd, assignCmd } from '../../store/history.js';
-import { parseSeatId } from '../../core/grid.js';
-import { classroomSummary } from '../../core/stats.js';
+import { parseSeatId } from '@ikoobee/seating-core';
+import { classroomSummary } from '@ikoobee/seating-core';
 
 export function createClassroomView(app) {
   const { store, history, toast, logger } = app;

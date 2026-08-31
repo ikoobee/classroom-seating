@@ -6,7 +6,7 @@
  *   #vchart   exported chart: distance from the seat card top to the first dark pixel of the seat number (breathing room)
  */
 import { App } from '../js/app.js';
-import { generateDemoStudents } from '../js/core/datagen.js';
+import { generateDemoStudents } from '@ikoobee/seating-core';
 import { replaceAllCmd, toggleLockCmd } from '../js/store/history.js';
 
 const out = [];

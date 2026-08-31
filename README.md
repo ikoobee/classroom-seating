@@ -2,7 +2,7 @@
 
 ![CI](https://github.com/ikoobee/classroom-seating/actions/workflows/ci.yml/badge.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Version](https://img.shields.io/badge/version-1.0.0-green.svg)
+![Version](https://img.shields.io/badge/version-1.1.0-green.svg)
 ![Zero build](https://img.shields.io/badge/zero--build-pure--static-orange.svg)
 
 English | [简体中文](README.zh-CN.md)
@@ -68,16 +68,18 @@ Browser suites: `tests/runner.html` (unit) · `tests/e2e.html` (E2E smoke).
 
 ```
 classroom-seating/
-├── index.html              # single page
+├── index.html              # single page (importmap wires @ikoobee/seating-core to the local package)
 ├── css/                    # styles (theme variables in base.css)
+├── packages/
+│   └── seating-core/       # the engine as a standalone npm package (@ikoobee/seating-core)
+│       └── src/            # pure logic layer (no DOM/IO, independently testable)
+│           ├── engine/     # seating engine: context/constraints/scorers/evaluate/
+│           │               #   construct/moves/optimize/precheck/engine
+│           ├── rotation.js # five rotations (cyclic permutation, lock-safe)
+│           ├── grid.js     # grid geometry (aisles/deskmate edges/front-back/front zone)
+│           └── datagen / models / constants / relations / stats / rng
 ├── js/
 │   ├── main.js / app.js    # entry wiring / app coordinator
-│   ├── core/               # pure logic layer (no DOM/IO, independently testable)
-│   │   ├── engine/         # seating engine: context/constraints/scorers/evaluate/
-│   │   │                   #   construct/moves/optimize/precheck/engine
-│   │   ├── rotation.js     # five rotations (cyclic permutation, lock-safe)
-│   │   ├── grid.js         # grid geometry (aisles/deskmate edges/front-back/front zone)
-│   │   └── datagen / models / constants / relations / stats / rng
 │   ├── store/              # mini store + actions/reducers + command-based history
 │   ├── services/           # storage (debounce + quota fallback) / logger (index/detail split) /
 │   │                       #   arranger (orchestration) / excel / image / backup / vendor
@@ -86,6 +88,8 @@ classroom-seating/
 ├── assets/vendor/          # xlsx (local copy first, CDN fallback)
 └── tests/                  # runner.html unit tests / e2e.html smoke / _node.mjs headless
 ```
+
+The engine is consumable as the standalone npm package **`@ikoobee/seating-core`** — the app itself imports it via an import map (the site stays zero-build), and downstream projects can depend on the published package.
 
 ## 🎯 How the Engine Works
 

@@ -2,9 +2,9 @@
  * Reducer: merges by slice, returns { state, changed }
  */
 import { A } from './actions.js';
-import { defaultRules } from '../core/constants.js';
-import { normalizeLayout, activeSeats } from '../core/grid.js';
-import { normalizeRelations, pruneRelations } from '../core/relations.js';
+import { defaultRules } from '@ikoobee/seating-core';
+import { normalizeLayout, activeSeats } from '@ikoobee/seating-core';
+import { normalizeRelations, pruneRelations } from '@ikoobee/seating-core';
 
 export function initialState() {
   return {

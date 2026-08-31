@@ -3,14 +3,14 @@
  * construction & optimization / hard constraints / rotation / state & undo
  */
 import { describe, test, assert, assertEquals, renderResults } from './framework.js';
-import { seatId, parseSeatId, activeSeats, deskEdges, frontBackEdges, frontRowCount, normalizeLayout } from '../js/core/grid.js';
-import { createStudent } from '../js/core/models.js';
-import { defaultRules } from '../js/core/constants.js';
-import { generateDemoStudents } from '../js/core/datagen.js';
-import { buildContext, isDeskPair } from '../js/core/engine/context.js';
-import { evaluate } from '../js/core/engine/evaluate.js';
-import { generateSolution } from '../js/core/engine/engine.js';
-import { applyRotation, buildRotationMap } from '../js/core/rotation.js';
+import { seatId, parseSeatId, activeSeats, deskEdges, frontBackEdges, frontRowCount, normalizeLayout } from '@ikoobee/seating-core';
+import { createStudent } from '@ikoobee/seating-core';
+import { defaultRules } from '@ikoobee/seating-core';
+import { generateDemoStudents } from '@ikoobee/seating-core';
+import { buildContext, isDeskPair } from '@ikoobee/seating-core';
+import { evaluate } from '@ikoobee/seating-core';
+import { generateSolution } from '@ikoobee/seating-core';
+import { applyRotation, buildRotationMap } from '@ikoobee/seating-core';
 import { rowsToStudentInputs } from '../js/services/excel.js';
 import { createStore } from '../js/store/store.js';
 import { reducer, initialState } from '../js/store/reducers.js';

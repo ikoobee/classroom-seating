@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-08-31
+
+### Changed
+
+- **Seating engine extracted into a standalone npm package `@ikoobee/seating-core`** (`packages/seating-core/`, pure logic, zero DOM/IO). The app imports it via an import map, so the site remains zero-build; downstream projects can now depend on the published package. Public API surface: engine entry points (generateSolution / generateCandidates / scoreAssignment), grid geometry, rotations, models, relations, stats, seeded RNG, demo data, enum dictionaries — engine internals (scorers/moves/optimize/construct/precheck/constraints) stay private to reduce API churn
+
 ## [1.0.0] - 2026-08-31
 
 ### Changed

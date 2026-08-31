@@ -1,13 +1,16 @@
 {
   "name": "classroom-seating",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "description": "Zero-build, privacy-first classroom seat planner (pure static site)",
   "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "test": "node tests/_node.mjs",
-    "lint": "eslint js/ tests/*.js tests/*.mjs scripts/"
+    "lint": "eslint js/ packages/ tests/*.js tests/*.mjs scripts/"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.0",

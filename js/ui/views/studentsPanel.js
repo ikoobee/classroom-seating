@@ -2,12 +2,12 @@
  * Right students panel: search / filter / list (drag to seat, double-click to edit) / add / demo data / clear
  */
 import { h, clearEl } from '../dom.js';
-import { createStudent, validateStudent } from '../../core/models.js';
-import { generateDemoStudents } from '../../core/datagen.js';
+import { createStudent, validateStudent } from '@ikoobee/seating-core';
+import { generateDemoStudents } from '@ikoobee/seating-core';
 import { addStudentCmd, updateStudentCmd, deleteStudentCmd, replaceAllCmd } from '../../store/history.js';
 import { openModal, closeModal } from '../components/modal.js';
 import { confirmDialog } from '../components/toast.js';
-import { GENDERS, HEIGHTS, VISIONS, ACADEMICS, PERSONALITIES, ABILITIES, DUTIES, ANNOTATION_COLORS } from '../../core/constants.js';
+import { GENDERS, HEIGHTS, VISIONS, ACADEMICS, PERSONALITIES, ABILITIES, DUTIES, ANNOTATION_COLORS } from '@ikoobee/seating-core';
 
 export function createStudentsPanel(app) {
   const { store, history, toast, logger } = app;

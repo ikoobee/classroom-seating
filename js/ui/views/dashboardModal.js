@@ -3,9 +3,9 @@
  */
 import { h, clearEl } from '../dom.js';
 import { openModal, closeModal } from '../components/modal.js';
-import { attributeDistribution, seatHeatmap } from '../../core/stats.js';
+import { attributeDistribution, seatHeatmap } from '@ikoobee/seating-core';
 import { donut, barList, PALETTE } from '../components/charts.js';
-import { HEIGHTS, VISIONS, ACADEMICS, PERSONALITIES, ANNOTATION_COLORS, DIMENSION_COLORS } from '../../core/constants.js';
+import { HEIGHTS, VISIONS, ACADEMICS, PERSONALITIES, ANNOTATION_COLORS, DIMENSION_COLORS } from '@ikoobee/seating-core';
 
 const ORDER = {
   height: HEIGHTS, vision: VISIONS, academic: ACADEMICS, personality: PERSONALITIES,

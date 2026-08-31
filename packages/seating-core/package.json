@@ -1,0 +1,29 @@
+{
+  "name": "@ikoobee/seating-core",
+  "version": "1.0.0",
+  "description": "Classroom seating arrangement engine: hard constraints + 10 weighted soft rules, hill climbing x simulated annealing. Pure logic, zero DOM/IO, seeded and reproducible.",
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js"
+  },
+  "files": [
+    "index.js",
+    "src"
+  ],
+  "keywords": [
+    "seating",
+    "classroom",
+    "seat-planning",
+    "optimization",
+    "simulated-annealing",
+    "teacher",
+    "education"
+  ],
+  "author": "Ethan (ikoobee)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ikoobee/classroom-seating.git"
+  }
+}

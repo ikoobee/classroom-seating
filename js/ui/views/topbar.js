@@ -2,7 +2,7 @@
  * Topbar: arrange entry / candidates / rotation / undo & redo / lock mode / score badge / entries to feature modals
  */
 import { h, popupMenu, fmtTime } from '../dom.js';
-import { ROTATION_MODES } from '../../core/rotation.js';
+import { ROTATION_MODES } from '@ikoobee/seating-core';
 import { openModal, closeModal } from '../components/modal.js';
 import { openReportModal } from './reportModal.js';
 import { openRelationsModal } from './relationsModal.js';

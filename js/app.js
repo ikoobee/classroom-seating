@@ -13,9 +13,9 @@ import { createStudentsPanel } from './ui/views/studentsPanel.js';
 import { createRulesPanel } from './ui/views/rulesPanel.js';
 import { setupShortcuts } from './ui/interactions/shortcuts.js';
 import { toast } from './ui/components/toast.js';
-import { normalizeLayout, activeSeats } from './core/grid.js';
-import { normalizeRelations } from './core/relations.js';
-import { defaultRules } from './core/constants.js';
+import { normalizeLayout, activeSeats } from '@ikoobee/seating-core';
+import { normalizeRelations } from '@ikoobee/seating-core';
+import { defaultRules } from '@ikoobee/seating-core';
 
 const PERSIST_SLICES = ['students', 'layout', 'assignment', 'locks', 'relations', 'rules', 'settings', 'logs'];
 

@@ -5,8 +5,8 @@
 import { h, clearEl, appendKids, fmtTime } from '../dom.js';
 import { openModal, closeModal } from '../components/modal.js';
 import { confirmDialog } from '../components/toast.js';
-import { TEMPLATES } from '../../core/constants.js';
-import { templateLayout } from '../../core/grid.js';
+import { TEMPLATES } from '@ikoobee/seating-core';
+import { templateLayout } from '@ikoobee/seating-core';
 import { applyFullState } from './importModal.js';
 
 const selectStyle = {

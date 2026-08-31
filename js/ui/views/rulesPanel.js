@@ -5,7 +5,7 @@
  * with the weight sliders.
  */
 import { h, clearEl } from '../dom.js';
-import { RULE_BY_ID } from '../../core/constants.js';
+import { RULE_BY_ID } from '@ikoobee/seating-core';
 
 export function createRulesPanel(app) {
   const { store, toast } = app;

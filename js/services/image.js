@@ -2,7 +2,7 @@
  * Seating chart image export: drawn directly with plain Canvas 2D (simplified — title + headcount + podium + name-only seat cards)
  * Not included: date/time, nearsighted count, score, seat icons, class duty, annotation color bars, bottom legend
  */
-import { activeSeats } from '../core/grid.js';
+import { activeSeats } from '@ikoobee/seating-core';
 
 const FONT = '"PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif';
 

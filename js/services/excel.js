@@ -3,11 +3,11 @@
  * All 9 fields are mapped on import
  */
 import { loadXlsx } from './vendor.js';
-import { normalizeStudentInput } from '../core/models.js';
-import { activeSeats } from '../core/grid.js';
+import { normalizeStudentInput } from '@ikoobee/seating-core';
+import { activeSeats } from '@ikoobee/seating-core';
 import {
   GENDERS, HEIGHTS, VISIONS, ACADEMICS, PERSONALITIES, ABILITIES, DUTIES, ANNOTATION_COLORS,
-} from '../core/constants.js';
+} from '@ikoobee/seating-core';
 
 /** field -> Chinese/English header aliases */
 const COLUMN_ALIASES = {
