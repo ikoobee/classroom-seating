@@ -1,6 +1,6 @@
 {
   "name": "@ikoobee/seating-core",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Classroom seating arrangement engine: hard constraints + 10 weighted soft rules, hill climbing x simulated annealing. Pure logic, zero DOM/IO, seeded and reproducible.",
   "type": "module",
   "main": "./index.js",

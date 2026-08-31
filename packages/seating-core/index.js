@@ -17,4 +17,5 @@ export * from './src/rng.js';
 export * from './src/datagen.js';
 export * from './src/engine/context.js';
 export * from './src/engine/evaluate.js';
+export * from './src/engine/precheck.js';
 export * from './src/engine/engine.js';

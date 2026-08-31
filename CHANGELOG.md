@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (seating-core 1.1.0)
+
+- Zone hard constraints fully wired: `createStudent` now accepts and normalizes a zone spec (`{ rows: [minRow, maxRow] }`) instead of discarding it; precheck reports zone capacity overflow (fatal), out-of-classroom ranges (warning with clamp) and locked-seat conflicts (warning); `precheck` is now part of the package's public API
+- 4 new zone test cases (36 total): precheck scenarios + end-to-end arrangement honoring zones
+
 ## [1.1.0] - 2026-08-31
 
 ### Changed

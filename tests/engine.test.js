@@ -10,6 +10,7 @@ import { generateDemoStudents } from '@ikoobee/seating-core';
 import { buildContext, isDeskPair } from '@ikoobee/seating-core';
 import { evaluate } from '@ikoobee/seating-core';
 import { generateSolution } from '@ikoobee/seating-core';
+import { precheck } from '@ikoobee/seating-core';
 import { applyRotation, buildRotationMap } from '@ikoobee/seating-core';
 import { rowsToStudentInputs } from '../js/services/excel.js';
 import { createStore } from '../js/store/store.js';
@@ -256,6 +257,54 @@ test('学生多于座位：返回 fatal', () => {
   const result = generateSolution(makeCfg(students, { rows: 2, cols: 2 }), 1);
   assert(!result.ok, '应报 fatal');
   assert(result.fatal.length >= 1, '应有 fatal 信息');
+});
+
+/* ---------- zone precheck ---------- */
+
+test('zone 预检：区域容量不足返回 fatal', () => {
+  // Row 1 has only 2 seats but 3 students must sit there
+  const students = [S(1, { zone: { rows: [1, 1] } }), S(2, { zone: { rows: [1, 1] } }), S(3, { zone: { rows: [1, 1] } })];
+  const ctx = buildContext(makeCfg(students, { rows: 4, cols: 2 }));
+  const pre = precheck(ctx);
+  assert(pre.fatal.length === 1, `应有 1 条 fatal，实际 ${pre.fatal.length}`);
+  assert(pre.fatal[0].includes('区域'), 'fatal 应说明区域容量问题');
+});
+
+test('zone 预检：区间越界教室排数时警告并收敛', () => {
+  const students = [S(1, { zone: { rows: [2, 9] } })]; // classroom has 4 rows
+  const ctx = buildContext(makeCfg(students, { rows: 4, cols: 2 }));
+  const pre = precheck(ctx);
+  assertEquals(pre.fatal.length, 0, '越界但容量足够，不应 fatal');
+  assert(pre.warnings.some(w => w.includes('超出教室范围')), '应有越界警告');
+});
+
+test('zone 预检：锁定座位与区域冲突时警告', () => {
+  const students = [S(1, { zone: { rows: [1, 1] } }), S(2)];
+  const ctx = buildContext(makeCfg(students, { rows: 4, cols: 2 }, { locks: new Set(['4-1']), assignment: { '4-1': 1 } }));
+  const pre = precheck(ctx);
+  assert(pre.warnings.some(w => w.includes('冲突')), '应有锁定与区域冲突的警告');
+});
+
+test('zone 引擎：满足区域约束的排座零硬违规', () => {
+  const students = [
+    S(1, { zone: { rows: [1, 1] } }), S(2, { zone: { rows: [1, 1] } }),
+    S(3, { zone: { rows: [3, 4] } }), S(4, { zone: { rows: [3, 4] } }),
+    S(5), S(6),
+  ];
+  const weights = { ...defaultRules().weights };
+  for (const k of Object.keys(weights)) weights[k] = 0;
+  const result = generateSolution(
+    makeCfg(students, { rows: 4, cols: 2 }, { rules: { weights, frontRowRatio: 0 } }),
+    7, { maxIter: 4000, timeMs: 300 });
+  assert(result.ok, '应成功出解');
+  assertEquals(result.score.hardViolations.filter(v => v.type === 'zone').length, 0, '不应有 zone 违规');
+  const rowOf = sid => {
+    const seat = Object.entries(result.assignment).find(([, s]) => s === sid)[0];
+    return Number(seat.split('-')[0]);
+  };
+  assertEquals(rowOf(1), 1, '学生1 应在第 1 排');
+  assertEquals(rowOf(2), 1, '学生2 应在第 1 排');
+  assert(rowOf(3) >= 3 && rowOf(4) >= 3, '学生3/4 应在第 3-4 排');
 });
 
 /* ---------- rotation ---------- */

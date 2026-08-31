@@ -7,6 +7,15 @@ import {
 
 const ANNO_VALUES = ['red', 'orange', 'yellow', 'green', 'purple'];
 
+/** Normalize a zone hard-constraint spec: { rows: [minRow, maxRow] } or null */
+function normalizeZone(zone) {
+  if (!zone || !Array.isArray(zone.rows) || zone.rows.length < 2) return null;
+  const nums = [Number(zone.rows[0]), Number(zone.rows[1])];
+  if (!nums.every(Number.isFinite)) return null;
+  const [r0, r1] = nums.map(Math.round);
+  return { rows: [Math.min(r0, r1), Math.max(r0, r1)] };
+}
+
 export function createStudent(data = {}) {
   return {
     id: data.id ?? 0,
@@ -19,7 +28,7 @@ export function createStudent(data = {}) {
     ability: ABILITIES.includes(data.ability) ? data.ability : '',
     tags: Array.isArray(data.tags) ? data.tags.filter(t => DUTIES.includes(t)) : [],
     annotationColor: ANNO_VALUES.includes(data.annotationColor) ? data.annotationColor : null,
-    zone: null, // reserved: zone hard constraint { rows: [min, max] }
+    zone: normalizeZone(data.zone), // zone hard constraint { rows: [minRow, maxRow] }
   };
 }
 
