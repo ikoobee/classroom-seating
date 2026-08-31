@@ -108,6 +108,12 @@ classroom-seating/
 
 [MIT](LICENSE)
 
+## ⭐ Pro 版
+
+面向有更高需求的老师，存在商业版 **排座 Pro**：多班级 / 多学期档案、批量打印模板（A4 座位表与桌贴姓名条）、区域约束、规则预设。它基于同一引擎（`@ikoobee/seating-core`），采用可持续的 open-core 模式。
+
+**免费版现有功能永久保留**——Pro 只在其上叠加能力，不会有任何功能被上锁或收回。
+
 ## 🙏 致谢
 
 - [SheetJS (xlsx) 0.18.5](https://sheetjs.com) — Apache-2.0 许可证。本地副本（`assets/vendor/`）优先加载、失败回退 CDN，用于 Excel 导入导出。

@@ -108,6 +108,12 @@ The engine is consumable as the standalone npm package **`@ikoobee/seating-core`
 
 [MIT](LICENSE)
 
+## ⭐ Pro Edition
+
+A commercial **Seating Pro** edition exists for teachers who need more: multi-class / multi-term archives, batch print templates (A4 charts & desk name strips), zone constraints and rule presets. It is built on this same engine (`@ikoobee/seating-core`) under a sustainable open-core model.
+
+**This free version keeps every feature you see here, forever** — the Pro edition only adds capabilities on top; nothing gets paywalled or taken away.
+
 ## 🙏 Acknowledgments
 
 - [SheetJS (xlsx) 0.18.5](https://sheetjs.com) — Apache-2.0. Vendored local copy (`assets/vendor/`) with CDN fallback, used for Excel import/export.
