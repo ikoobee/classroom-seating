@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Ability list cleaned up from 17 to 13 values: removed 学习 (duplicates the grade field), 艺术 (overlaps the concrete art talents), 帮助 (a personality trait — already covered by "助人"), and 需要 (a support-needs flag, not a talent). Every remaining value is a concrete, self-explanatory talent; existing data holding removed values degrades gracefully to empty on load
+
 ### Added
 
-- Import template reworked into two sheets: demo rows only on sheet 1, field notes on a dedicated sheet 2, generated from the app's own constants (all 17 ability values now listed, matching the extended ability design)
+- Import template reworked into two sheets: demo rows only on sheet 1, field notes on a dedicated sheet 2, generated from the app's own constants (abilities listed stay in sync with the source of truth)
 
 - Initial public release: seating engine with hard constraints (locked seats, friends-as-deskmates, blacklist separation) and 10 weighted soft rules, optimized by hill climbing + simulated annealing
 - Five fair-rotation modes (shift left / right, rows back / forward, serpentine) with locked-seat protection and rotation history

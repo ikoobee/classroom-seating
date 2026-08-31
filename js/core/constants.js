@@ -7,11 +7,12 @@ export const HEIGHTS = ['高', '中', '矮'];
 export const VISIONS = ['近视', '正常', '良好'];
 export const ACADEMICS = ['优秀', '良好', '中等', '待提高'];
 export const PERSONALITIES = ['活跃', '安静', '调皮', '文静', '领导', '助人'];
+/**
+ * Student abilities: concrete, non-overlapping talents only.
+ * Academic level lives in the grade field; helper traits in personality.
+ */
 export const ABILITIES = [
-  // Core set (kept for legacy data compatibility)
-  '学习', '体育', '艺术', '组织', '帮助', '需要',
-  // Extended talents
-  '音乐', '美术', '书法', '演讲', '朗诵', '舞蹈', '棋类',
+  '体育', '组织', '音乐', '美术', '书法', '演讲', '朗诵', '舞蹈', '棋类',
   '英语口语', '科学实验', '信息技术', '劳动实践',
 ];
 
