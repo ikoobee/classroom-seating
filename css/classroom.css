@@ -1,0 +1,202 @@
+/* ============ 教室区域 ============ */
+.podium {
+  width: min(440px, 62%);
+  padding: 10px 0;
+  text-align: center;
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: 12px;
+  text-indent: 12px;
+  background: var(--podium-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  flex-shrink: 0;
+}
+
+.seat-grid {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  /* 不用 flex:1——网格按内容撑开，超出时由教室容器滚动，避免内容溢出遮挡状态条 */
+}
+
+.grid-cell.aisle {
+  /* 过道占位格：斜纹仅提示，不承载座位 */
+  background: repeating-linear-gradient(45deg, transparent 0 6px, var(--grid-line) 6px 8px);
+  border-radius: var(--radius-sm);
+  opacity: .45;
+  min-height: 20px;
+}
+
+.seat {
+  position: relative;
+  width: var(--seat-size, 76px);
+  height: calc(var(--seat-size, 76px) * 0.92);
+  border-radius: 8px;
+  background: var(--seat-empty-bg);
+  border: 1.5px dashed var(--border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color .15s, box-shadow .15s, background .15s;
+  user-select: none;
+}
+
+.seat:hover { border-color: var(--primary); }
+.seat.selected {
+  border-style: solid;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+.seat.drag-over {
+  border-style: solid;
+  border-color: var(--success);
+  background: var(--success-soft);
+}
+
+/* ---- 学生卡（座位内） ---- */
+.student-card {
+  width: calc(100% - 6px);
+  height: calc(100% - 6px);
+  border-radius: 6px;
+  /* 姓名始终绝对居中：卡片本体只承载姓名，图标行与职务标签为悬浮层 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--seat-bg);
+  border: 2px solid var(--border-strong);
+  cursor: grab;
+  position: relative;
+  overflow: hidden;
+  will-change: transform;
+}
+
+.student-card.gender-m { border-color: var(--male); background: var(--male-soft); }
+.student-card.gender-f { border-color: var(--female); background: var(--female-soft); }
+
+/* 标注色：左侧色条 */
+.student-card.anno-red    { box-shadow: inset 4px 0 0 var(--anno-red); }
+.student-card.anno-orange { box-shadow: inset 4px 0 0 var(--anno-orange); }
+.student-card.anno-yellow { box-shadow: inset 4px 0 0 var(--anno-yellow); }
+.student-card.anno-green  { box-shadow: inset 4px 0 0 var(--anno-green); }
+.student-card.anno-purple { box-shadow: inset 4px 0 0 var(--anno-purple); }
+
+.student-card .sc-name {
+  font-weight: 600;
+  font-size: calc(var(--seat-size, 76px) * 0.17);
+  max-width: 92%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.25;
+}
+
+/* 图标行：底部悬浮（不影响姓名居中）。永不换行——最多 3 个学生属性图标 */
+.student-card .sc-meta {
+  position: absolute;
+  bottom: 3px;
+  left: 0;
+  right: 0;
+  font-size: calc(var(--seat-size, 76px) * 0.13);
+  color: var(--text-2);
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  line-height: 1.2;
+  padding: 0 4px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* 锁定标识：卡片左上角迷你胶囊（与右上角职务标签同款视觉：同 offset / 同白底圆角） */
+.seat.locked .student-card::after {
+  content: '🔒';
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  font-size: calc(var(--seat-size, 76px) * 0.105);
+  line-height: 1.2;
+  padding: 1px 4px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, .72);
+}
+
+/* 带标注色条（左侧 inset 4px）时右移，避免压住色条 */
+.seat.locked .student-card:is(.anno-red, .anno-orange, .anno-yellow, .anno-green, .anno-purple)::after {
+  left: 8px;
+}
+
+/* 空座位锁定：座位号后缀显示（空座无卡片，座位号可见） */
+.seat.locked .seat-no::after {
+  content: ' 🔒';
+}
+
+.sc-ic { }
+
+/* 职务：右上角小标签（不截断字数，超宽时以省略号兜底） */
+.sc-badge {
+  position: absolute;
+  top: 3px;
+  right: 4px;
+  font-size: calc(var(--seat-size, 76px) * 0.105);
+  line-height: 1.2;
+  padding: 1px 5px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, .72);
+  color: #334155;
+  max-width: 88%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.seat.locked { border-style: solid; border-color: var(--warning); background: var(--warning-soft); }
+.seat.locked.drag-over { border-color: var(--danger); }
+
+.seat .seat-no {
+  position: absolute;
+  top: 2px;
+  left: 4px;
+  font-size: 10px;
+  color: var(--text-3);
+  line-height: 1.2;
+}
+
+/* FLIP 动画期间抑制其它过渡 */
+.seat-grid.flipping .student-card { transition: none !important; }
+.student-card.flip-playing { transition: transform .38s cubic-bezier(.2, .8, .2, 1) !important; z-index: 5; }
+.student-card.enter-anim { animation: seat-enter .3s ease; }
+@keyframes seat-enter {
+  from { transform: scale(.5); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+/* 锁定模式提示 */
+body.lock-mode .seat { border-color: var(--warning); }
+body.lock-mode .classroom-wrap { outline: 2px dashed var(--warning); outline-offset: -5px; }
+
+/* ---- 状态条（吸底：滚动时始终可见，且不被座位内容遮挡） ---- */
+.status-bar {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+  padding: 8px 14px;
+  background: var(--bg-panel-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-2);
+  font-size: 12.5px;
+  flex-shrink: 0;
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+  margin-top: auto;
+}
+.status-bar .sb-item { display: flex; align-items: center; gap: 6px; }
+.status-bar .sb-dot { width: 8px; height: 8px; border-radius: 50%; }
+.status-bar .sb-save { margin-left: auto; }

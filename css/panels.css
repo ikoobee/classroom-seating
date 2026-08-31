@@ -1,0 +1,223 @@
+/* ============ 侧栏面板（规则 / 学生） ============ */
+.panel-head {
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  gap: 8px;
+}
+.panel-head h3 { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 7px; white-space: nowrap; }
+.panel-body { flex: 1; overflow-y: auto; padding: 14px 14px 16px; min-height: 0; }
+.panel-foot {
+  padding: 12px 14px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* ---- 规则面板 ---- */
+.rule-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  margin-bottom: 10px;
+  background: var(--bg-panel-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: box-shadow .15s, border-color .15s;
+}
+.rule-item.rule-off { opacity: .55; }
+.rule-item.dragging { opacity: .4; border-style: dashed; }
+.rule-item.drag-target { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-soft); }
+
+.rule-drag {
+  cursor: grab;
+  color: var(--text-3);
+  font-size: 15px;
+  letter-spacing: -2px;
+  padding: 4px 2px;
+  margin-left: -4px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  transition: color .15s, background .15s;
+}
+.rule-drag:hover { color: var(--primary); background: var(--primary-soft); }
+.rule-drag:active { cursor: grabbing; }
+
+.rule-main { flex: 1; min-width: 0; }
+.rule-name { font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 7px; }
+.rule-name .r-w { color: var(--primary); font-size: 11.5px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.rule-desc { font-size: 11px; color: var(--text-3); margin: 3px 0 8px; line-height: 1.5; }
+
+.rule-slider { display: flex; align-items: center; gap: 8px; }
+.rule-slider input[type="range"] { flex: 1; height: 4px; accent-color: var(--primary); cursor: pointer; }
+.rule-slider .rv { width: 28px; text-align: right; font-size: 11.5px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+
+/* 开关 */
+.switch { position: relative; width: 34px; height: 19px; flex-shrink: 0; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.switch .sl {
+  position: absolute; inset: 0;
+  background: var(--border-strong);
+  border-radius: 10px;
+  transition: background .15s;
+  cursor: pointer;
+}
+.switch .sl::before {
+  content: '';
+  position: absolute;
+  width: 15px; height: 15px;
+  border-radius: 50%;
+  background: #fff;
+  top: 2px; left: 2px;
+  transition: transform .15s;
+  box-shadow: 0 1px 2px rgba(0,0,0,.25);
+}
+.switch input:checked + .sl { background: var(--primary); }
+.switch input:checked + .sl::before { transform: translateX(15px); }
+
+/* 滑块行（前排比例等） */
+.slider-row {
+  padding: 10px 4px 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--text-2);
+}
+.slider-row .slider-line { display: flex; align-items: center; gap: 8px; }
+.slider-row input[type="range"] { flex: 1; accent-color: var(--primary); cursor: pointer; }
+.slider-row .sv { font-variant-numeric: tabular-nums; color: var(--primary); font-weight: 600; }
+
+.panel-section { margin-bottom: 18px; }
+.panel-section:last-child { margin-bottom: 4px; }
+.panel-section h4 {
+  font-size: 12px;
+  color: var(--text-3);
+  font-weight: 600;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ---- 学生面板 ---- */
+.search-box { position: relative; margin-bottom: 10px; }
+.search-box input {
+  width: 100%;
+  padding: 8px 10px 8px 30px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-panel-2);
+  outline: none;
+}
+.search-box input:focus { border-color: var(--primary); }
+.search-box::before {
+  content: '🔍';
+  position: absolute;
+  left: 9px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px;
+  opacity: .55;
+}
+
+.filter-tabs { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+.filter-tab {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: var(--text-2);
+  background: var(--bg-panel-2);
+  border: 1px solid var(--border);
+  transition: all .15s;
+}
+.filter-tab:hover { border-color: var(--primary); color: var(--primary); }
+.filter-tab.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+.student-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 11px;
+  margin-bottom: 10px;
+  background: var(--bg-panel-2);
+  border: 1px solid var(--border);
+  border-left-width: 3px;
+  border-radius: var(--radius-sm);
+  cursor: grab;
+  transition: border-color .15s, box-shadow .15s;
+}
+.student-item:hover { border-color: var(--border-strong); box-shadow: var(--shadow); }
+.student-item.seated { opacity: .62; }
+.student-item.si-m { border-left-color: var(--male); }
+.student-item.si-f { border-left-color: var(--female); }
+.student-item.anno-red    { border-left-color: var(--anno-red); }
+.student-item.anno-orange { border-left-color: var(--anno-orange); }
+.student-item.anno-yellow { border-left-color: var(--anno-yellow); }
+.student-item.anno-green  { border-left-color: var(--anno-green); }
+.student-item.anno-purple { border-left-color: var(--anno-purple); }
+
+.si-avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+  color: #fff;
+}
+.si-avatar.a-m { background: var(--male); }
+.si-avatar.a-f { background: var(--female); }
+
+.si-main { flex: 1; min-width: 0; }
+.si-name {
+  font-size: 12.5px;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  white-space: nowrap;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+.si-nm { font-weight: 600; flex-shrink: 0; }
+.si-attrs { font-size: 11px; color: var(--text-3); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.si-tag {
+  font-size: 9.5px;
+  line-height: 1.5;
+  padding: 0 5px;
+  border-radius: 7px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  flex-shrink: 0;
+}
+.si-seat {
+  margin-left: auto;
+  padding-left: 6px;
+  font-size: 10px;
+  color: var(--text-3);
+  font-weight: 400;
+  flex-shrink: 0;
+}
+
+.si-del {
+  color: var(--text-3);
+  font-size: 13px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.si-del:hover { color: var(--danger); background: var(--danger-soft); }
+
+.empty-tip {
+  text-align: center;
+  color: var(--text-3);
+  font-size: 12.5px;
+  padding: 28px 12px;
+  line-height: 1.9;
+}

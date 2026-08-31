@@ -1,0 +1,102 @@
+/* ============ 基础与主题变量 ============ */
+:root {
+  --bg: #f1f5f9;
+  --bg-panel: #ffffff;
+  --bg-panel-2: #f8fafc;
+  --bg-hover: #eef2f7;
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --text: #1e293b;
+  --text-2: #64748b;
+  --text-3: #94a3b8;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-soft: #dbeafe;
+  --success: #16a34a;
+  --success-soft: #dcfce7;
+  --warning: #d97706;
+  --warning-soft: #fef3c7;
+  --danger: #dc2626;
+  --danger-soft: #fee2e2;
+  --info: #0891b2;
+  --shadow: 0 1px 3px rgba(15, 23, 42, .08), 0 4px 14px rgba(15, 23, 42, .06);
+  --shadow-lg: 0 10px 40px rgba(15, 23, 42, .18);
+  --radius: 10px;
+  --radius-sm: 6px;
+  /* 学生卡性别色 */
+  --male: #38bdf8;
+  --male-soft: #e0f2fe;
+  --female: #f472b6;
+  --female-soft: #fce7f3;
+  /* 标注色 */
+  --anno-red: #ef4444;
+  --anno-orange: #f97316;
+  --anno-yellow: #eab308;
+  --anno-green: #22c55e;
+  --anno-purple: #a855f7;
+  --seat-bg: #ffffff;
+  --seat-empty-bg: #f1f5f9;
+  --grid-line: #e2e8f0;
+  --podium-bg: linear-gradient(135deg, #2563eb, #1e40af);
+}
+
+body.dark-theme {
+  --bg: #0f172a;
+  --bg-panel: #1e293b;
+  --bg-panel-2: #16213a;
+  --bg-hover: #273549;
+  --border: #334155;
+  --border-strong: #475569;
+  --text: #e2e8f0;
+  --text-2: #94a3b8;
+  --text-3: #64748b;
+  --primary: #3b82f6;
+  --primary-hover: #60a5fa;
+  --primary-soft: #1e3a5f;
+  --success: #4ade80;
+  --success-soft: #14532d;
+  --warning: #fbbf24;
+  --warning-soft: #451a03;
+  --danger: #f87171;
+  --danger-soft: #450a0a;
+  --info: #22d3ee;
+  --shadow: 0 1px 3px rgba(0, 0, 0, .4);
+  --shadow-lg: 0 10px 40px rgba(0, 0, 0, .6);
+  --male: #38bdf8;
+  --male-soft: #0c2a3f;
+  --female: #f472b6;
+  --female-soft: #3d0c24;
+  --seat-bg: #243449;
+  --seat-empty-bg: #1a2639;
+  --grid-line: #334155;
+  --podium-bg: linear-gradient(135deg, #1d4ed8, #172554);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  overflow: hidden;
+}
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+input, select, textarea { font-family: inherit; font-size: 13px; color: var(--text); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}

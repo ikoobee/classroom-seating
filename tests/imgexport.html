@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>图片导出错误复现</title>
+  <link rel="stylesheet" href="../css/base.css?v=20260830c">
+  <link rel="stylesheet" href="../css/layout.css?v=20260830c">
+  <link rel="stylesheet" href="../css/classroom.css?v=20260830c">
+  <link rel="stylesheet" href="../css/panels.css?v=20260830c">
+  <link rel="stylesheet" href="../css/components.css?v=20260830c">
+</head>
+<body>
+  <div id="imgResult" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:#fff;padding:10px 14px;font:12px monospace;max-height:20vh;overflow:auto;box-shadow:0 2px 10px rgba(0,0,0,.25)">运行中…</div>
+  <div id="imgShow" style="padding:200px 16px 16px;max-width:1300px;margin:0 auto"></div>
+  <div id="app">
+    <header id="topbar" class="topbar"></header>
+    <div class="main-layout">
+      <aside id="rulesPanel" class="side-panel side-left"></aside>
+      <main class="classroom-wrap">
+        <div class="podium">讲 台</div>
+        <div id="seatGrid" class="seat-grid"></div>
+        <div id="statusBar" class="status-bar"></div>
+      </main>
+      <aside id="studentsPanel" class="side-panel side-right"></aside>
+    </div>
+  </div>
+  <div id="toastHost"></div>
+  <div id="modalHost"></div>
+  <div id="tooltip" class="tooltip" hidden></div>
+  <script type="module" src="imgexport.js"></script>
+</body>
+</html>

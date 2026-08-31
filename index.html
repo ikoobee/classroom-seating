@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>智能排座系统 - 免费教室排座位工具 / 班主任座位安排软件</title>
+  <meta name="description" content="智能排座系统：免费纯前端教室排座位工具。10 条排座规则权重可调（视力/身高/成绩/行为/性别等），好友同桌与黑名单约束、五种座位轮换、多方案对比择优、Excel 导入导出、座位表图片导出，数据本地保存。">
+  <meta name="keywords" content="智能排座,排座位工具,教室排座,班主任软件,座位安排,排座系统">
+  <link rel="stylesheet" href="css/base.css?v=20260830c">
+  <link rel="stylesheet" href="css/layout.css?v=20260830c">
+  <link rel="stylesheet" href="css/classroom.css?v=20260830c">
+  <link rel="stylesheet" href="css/panels.css?v=20260830c">
+  <link rel="stylesheet" href="css/components.css?v=20260830c">
+</head>
+<body>
+  <div id="app">
+    <header id="topbar" class="topbar"></header>
+    <div class="main-layout">
+      <aside id="rulesPanel" class="side-panel side-left"></aside>
+      <main class="classroom-wrap">
+        <div class="podium">讲 台</div>
+        <div id="seatGrid" class="seat-grid"></div>
+        <div id="statusBar" class="status-bar"></div>
+      </main>
+      <aside id="studentsPanel" class="side-panel side-right"></aside>
+    </div>
+  </div>
+  <div id="toastHost"></div>
+  <div id="modalHost"></div>
+  <div id="tooltip" class="tooltip" hidden></div>
+  <script type="module" src="js/main.js?v=20260830c"></script>
+</body>
+</html>

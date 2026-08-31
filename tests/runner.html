@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>智能排座 单元测试</title>
+  <style>
+    body { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; max-width: 860px; margin: 24px auto; padding: 0 16px; background: #f8fafc; color: #1e293b; }
+    h1 { font-size: 20px; }
+    h2 { font-size: 15px; margin: 22px 0 8px; }
+    #summary { padding: 10px 14px; background: #e2e8f0; border-radius: 8px; font-size: 14px; }
+    .case { padding: 5px 10px; border-bottom: 1px solid #e2e8f0; font-size: 13px; }
+    .case .mark { display: inline-block; width: 22px; }
+    .case.ok .mark { color: #16a34a; }
+    .case.bad { background: #fee2e2; }
+    .case.bad .mark { color: #dc2626; font-weight: 700; }
+    .case .ms { color: #94a3b8; font-size: 11px; margin-left: 8px; }
+    .err { color: #b91c1c; font-size: 12px; padding: 4px 0 2px 26px; white-space: pre-wrap; }
+    .good-text { color: #16a34a; }
+    .bad-text { color: #dc2626; }
+    a { color: #2563eb; }
+  </style>
+</head>
+<body>
+  <h1>🧪 智能排座 — 单元测试</h1>
+  <div id="summary">运行中…</div>
+  <div id="results"></div>
+  <p style="margin-top:20px;color:#64748b;font-size:12px">
+    覆盖：网格几何 / 演示数据 / 评分器方向性 / 排座引擎（视力·好友·黑名单·锁定·超员）/ 五种轮换 / 状态管理与撤销重做 / Excel 导入 / JSON 备份。
+    返回 <a href="../index.html">应用</a>
+  </p>
+  <script type="module" src="engine.test.js"></script>
+</body>
+</html>
