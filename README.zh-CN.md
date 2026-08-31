@@ -4,6 +4,7 @@
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Version](https://img.shields.io/badge/version-1.1.0-green.svg)
 ![Zero build](https://img.shields.io/badge/zero--build-pure--static-orange.svg)
+![npm](https://img.shields.io/npm/v/@ikoobee/seating-core.svg)
 
 [English](README.md) | 简体中文
 

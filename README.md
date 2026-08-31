@@ -4,6 +4,7 @@
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Version](https://img.shields.io/badge/version-1.1.0-green.svg)
 ![Zero build](https://img.shields.io/badge/zero--build-pure--static-orange.svg)
+![npm](https://img.shields.io/npm/v/@ikoobee/seating-core.svg)
 
 English | [简体中文](README.zh-CN.md)
 
@@ -89,7 +90,7 @@ classroom-seating/
 └── tests/                  # runner.html unit tests / e2e.html smoke / _node.mjs headless
 ```
 
-The engine is consumable as the standalone npm package **`@ikoobee/seating-core`** — the app itself imports it via an import map (the site stays zero-build), and downstream projects can depend on the published package.
+The engine is consumable as the standalone npm package **[@ikoobee/seating-core](https://www.npmjs.com/package/@ikoobee/seating-core)** — the app itself imports it via an import map (the site stays zero-build), and downstream projects can depend on the published package.
 
 ## 🎯 How the Engine Works
 
