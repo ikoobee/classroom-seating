@@ -1,7 +1,8 @@
 /**
- * 左栏规则面板：10 条规则开关 + 0-100 权重滑块 + 手柄拖拽排序 + 前排比例
- * 排序仅影响列表显示顺序（便于整理常用规则），排座影响完全由权重决定；
- * 拖拽只允许从左侧 ⠿ 手柄发起，避免与权重滑块的手势冲突。
+ * Left rules panel: 10 rule toggles + 0-100 weight sliders + handle-drag reordering + front-row ratio
+ * Ordering only affects the list's display order (to keep frequent rules handy); arrangement impact is
+ * decided entirely by weights. Dragging may only start from the left ⠿ handle to avoid gesture conflicts
+ * with the weight sliders.
  */
 import { h, clearEl } from '../dom.js';
 import { RULE_BY_ID } from '../../core/constants.js';
@@ -40,7 +41,7 @@ export function createRulesPanel(app) {
   );
   const body = root.querySelector('#rulesBody');
 
-  // 折叠状态联动（持久化于 settings）
+  // Collapse-state sync (persisted in settings)
   function applyCollapsed() {
     const collapsed = !!store.getState().settings.rulesCollapsed;
     root.classList.toggle('collapsed', collapsed);
@@ -89,11 +90,11 @@ export function createRulesPanel(app) {
       dataset: { ruleId: rule.id },
     });
 
-    // 仅手柄可拖拽（setDragImage 让整条规则作为拖拽影像）
+    // Only the handle is draggable (setDragImage makes the whole rule item the drag image)
     const handle = h('span', { class: 'rule-drag', title: '拖动调整显示顺序', draggable: 'true' }, '⠿');
     handle.addEventListener('dragstart', e => {
       e.dataTransfer.effectAllowed = 'move';
-      try { e.dataTransfer.setDragImage(item, 14, 14); } catch { /* 忽略旧浏览器 */ }
+      try { e.dataTransfer.setDragImage(item, 14, 14); } catch { /* ignore older browsers */ }
       startDrag(item);
     });
 
@@ -132,7 +133,7 @@ export function createRulesPanel(app) {
     return item;
   }
 
-  /* ---------- 拖拽排序（仅显示顺序） ---------- */
+  /* ---------- Drag-to-reorder (display order only) ---------- */
 
   const list = () => body.querySelector('#ruleList');
   let dragEl = null;
@@ -143,7 +144,7 @@ export function createRulesPanel(app) {
     const onEnd = () => {
       item.classList.remove('dragging');
       qsaRuleItems().forEach(el => el.classList.remove('drag-target'));
-      // 依据当前 DOM 顺序持久化
+      // Persist based on the current DOM order
       const order = qsaRuleItems().map(el => el.dataset.ruleId);
       if (order.length && order.every(id => id)) store.dispatch({ type: 'REORDER_RULES', order });
       dragEl = null;
@@ -179,7 +180,7 @@ export function createRulesPanel(app) {
   }
 
   store.subscribe('rules', render);
-  store.subscribe('layout', render); // 前排区行数提示随布局变化
+  store.subscribe('layout', render); // The front-zone row count hint follows layout changes
 
   return { render };
 }

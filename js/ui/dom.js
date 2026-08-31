@@ -1,5 +1,5 @@
 /**
- * DOM 工具：元素工厂、事件委托、转义、下载
+ * DOM utilities: element factory, event delegation, escaping, download
  */
 
 export function h(tag, attrs = {}, ...children) {
@@ -25,8 +25,8 @@ export function qsa(sel, root = document) { return [...root.querySelectorAll(sel
 export function clearEl(el) { while (el.firstChild) el.removeChild(el.firstChild); }
 
 /**
- * 安全 append：展平数组、剔除 null/undefined。
- * 原生 Element.append 会把数组渲染为 "[object HTMLDivElement]"、把 null 渲染为 "null"。
+ * Safe append: flattens arrays and skips null/undefined.
+ * Native Element.append renders an array as "[object HTMLDivElement]" and null as "null".
  */
 export function appendKids(el, ...children) {
   for (const child of children.flat(Infinity)) {
@@ -46,9 +46,9 @@ export function download(filename, content, mime = 'application/octet-stream') {
   setTimeout(() => URL.revokeObjectURL(url), 3000);
 }
 
-/** 下拉菜单：点击按钮弹出，点击外部关闭 */
+/** Dropdown menu: opens on button click, closes on outside click */
 export function popupMenu(anchorBtn, items) {
-  // 关闭已有菜单
+  // Close any existing menu
   document.querySelector('.menu')?.remove();
   const menu = h('div', { class: 'menu' });
   for (const item of items) {
@@ -65,7 +65,7 @@ export function popupMenu(anchorBtn, items) {
   }
   const rect = anchorBtn.getBoundingClientRect();
   document.body.append(menu);
-  // 定位：默认在按钮下方，超出视口右缘时右对齐
+  // Position: below the button by default; clamped when it would overflow the right viewport edge
   const mw = menu.offsetWidth;
   menu.style.left = Math.max(8, Math.min(rect.left, window.innerWidth - mw - 8)) + 'px';
   const mh = menu.offsetHeight;
@@ -79,7 +79,7 @@ export function popupMenu(anchorBtn, items) {
   return menu;
 }
 
-/* ---------- 共享 tooltip ---------- */
+/* ---------- Shared tooltip ---------- */
 
 let tipEl = null;
 

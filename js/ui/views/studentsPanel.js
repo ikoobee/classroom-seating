@@ -1,5 +1,5 @@
 /**
- * 右栏学生面板：搜索 / 过滤 / 列表（拖拽入座、双击编辑）/ 添加 / 演示数据 / 清空
+ * Right students panel: search / filter / list (drag to seat, double-click to edit) / add / demo data / clear
  */
 import { h, clearEl } from '../dom.js';
 import { createStudent, validateStudent } from '../../core/models.js';
@@ -32,10 +32,10 @@ export function createStudentsPanel(app) {
   );
   const body = root.querySelector('#stuBody');
 
-  /* ---------- 图标图例 ---------- */
+  /* ---------- Icon legend ---------- */
 
   function openIconLegend() {
-    /** 图例行：图标芯片（仿座位卡配色）+ 大标题 + 小号说明 */
+    /** Legend row: icon chip (mimicking seat-card colors) + title + small-print description */
     const row = (chipContent, chipStyle, label, desc) => h('div', {
       style: { display: 'flex', alignItems: 'center', gap: 14, padding: '10px 0' },
     },
@@ -87,7 +87,7 @@ export function createStudentsPanel(app) {
     return modal;
   }
 
-  /* ---------- 渲染 ---------- */
+  /* ---------- Rendering ---------- */
 
   function render() {
     const state = store.getState();
@@ -99,8 +99,9 @@ export function createStudentsPanel(app) {
         type: 'text', placeholder: '搜索姓名 / 职务…', value: state.ui.search,
         oninput: e => app.store.dispatch({ type: 'PATCH_UI', patch: { search: e.target.value } }),
       }));
-    // 过滤 tab：避免输入丢失焦点，搜索框只建一次后复用 —— 简单起见每次渲染重建，焦点由 PATCH_UI 触发的重渲打断
-    // （处理：当 document.activeElement 在搜索框内时跳过重建）
+    // Filter tabs: to avoid losing input focus, the search box would ideally be created once and reused —
+    // for simplicity it is rebuilt on every render, and the PATCH_UI-triggered rerender interrupts focus
+    // (handled: capture document.activeElement while it is inside the search box, then restore focus below)
 
     const filters = [
       ['all', '全部'], ['unseated', '未安排'], ['special', '特殊'],
@@ -148,7 +149,7 @@ export function createStudentsPanel(app) {
     el.append(
       h('span', { class: `si-avatar a-${s.gender === '男' ? 'm' : 'f'}` }, s.name.slice(-1)),
       h('div', { class: 'si-main' },
-        // 第一行：姓名 + 完整职务 + 座位号（单行显示，nowrap 不换行）
+        // First line: name + full duty + seat number (rendered on a single line; nowrap prevents wrapping)
         h('div', { class: 'si-name' },
           h('span', { class: 'si-nm' }, s.name),
           s.tags.length ? h('span', { class: 'si-tag', title: s.tags.join('、') }, s.tags[0]) : null,
@@ -173,7 +174,7 @@ export function createStudentsPanel(app) {
     return el;
   }
 
-  /* ---------- 编辑弹窗 ---------- */
+  /* ---------- Edit dialog ---------- */
 
   function editStudent(studentId) {
     const state = store.getState();
@@ -260,7 +261,7 @@ export function createStudentsPanel(app) {
     });
   }
 
-  /* ---------- 演示数据 ---------- */
+  /* ---------- Demo data ---------- */
 
   function demoDialog() {
     const nInput = h('input', { type: 'number', min: 1, max: 80, value: 45, style: { width: '70px', padding: '6px 8px' } });
@@ -308,11 +309,11 @@ export function createStudentsPanel(app) {
     toast.success('名单已清空');
   }
 
-  /* ---------- 订阅 ---------- */
+  /* ---------- Subscriptions ---------- */
 
   store.subscribe('students', render);
   store.subscribe('assignment', render);
-  // ui 切片含高频变化的 lastScore，只在 filter/search 真正变化时重绘
+  // The ui slice contains the frequently-changing lastScore; only redraw when filter/search actually change
   let lastUiKey = `${store.getState().ui.filter}|${store.getState().ui.search}`;
   store.subscribe('ui', ui => {
     const key = `${ui.filter}|${ui.search}`;

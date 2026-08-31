@@ -1,5 +1,5 @@
 /**
- * 排座日志：索引（store/logs 切片，≤100 条小字段）与详情（分键存储，LRU 20 条）分离
+ * Arrangement logs: the index (store "logs" slice, ≤100 entries of small fields) is kept separate from details (stored per-key, LRU of 20)
  */
 
 export function createLogger(store, storage) {
@@ -18,7 +18,7 @@ export function createLogger(store, storage) {
   }
 
   return {
-    /** 智能排座 */
+    /** Smart arrangement */
     seat({ total, dimensions, hardViolations, meta, warnings, seedNote }) {
       return log('seat', {
         label: `智能排座 · ${total} 分`,
@@ -27,17 +27,17 @@ export function createLogger(store, storage) {
         dims: dimensions.map(d => `${d.name} ${d.score}`).join('　'),
       }, { dimensions, hardViolations, meta, warnings, seedNote });
     },
-    /** 轮换 */
+    /** Rotation */
     rotate({ modeName, moved, total }) {
       return log('rotate', { label: `${modeName} · ${moved} 个座位迁移`, score: total }, {
         modeName, moved, total,
       });
     },
-    /** 手动操作 */
+    /** Manual operation */
     manual(label, note) {
       return log('manual', { label }, { note });
     },
-    /** 导入 */
+    /** Import */
     importData(label, count) {
       return log('import', { label: `${label} · ${count} 名学生` }, { label, count });
     },
@@ -50,12 +50,12 @@ export function createLogger(store, storage) {
     },
 
     clearLogs() {
-      // 同时清掉全部详情
+      // Also drop all stored details
       store.getState().logs.forEach(l => storage.deleteLogDetail(l.id));
       store.dispatch({ type: 'CLEAR_LOGS' });
     },
 
-    /** 导出全部日志（索引 + 已有详情）为 JSON 文本 */
+    /** Export all logs (index + any stored details) as JSON text */
     exportLogs() {
       const logs = store.getState().logs;
       return JSON.stringify({

@@ -1,6 +1,6 @@
 /**
- * 座位表图片导出：纯 Canvas 2D 直接绘制（简化版——标题 + 人数 + 讲台 + 纯姓名座位卡）
- * 不含：时间 / 近视数 / 评分 / 座位图标 / 职务 / 标注色条 / 底部图例
+ * Seating chart image export: drawn directly with plain Canvas 2D (simplified — title + headcount + podium + name-only seat cards)
+ * Not included: date/time, nearsighted count, score, seat icons, class duty, annotation color bars, bottom legend
  */
 import { activeSeats } from '../core/grid.js';
 
@@ -33,7 +33,7 @@ function ellipsize(ctx, text, maxWidth) {
 }
 
 /**
- * 绘制座位表图片（简化版）
+ * Render the seating chart image (simplified version)
  * @returns {HTMLCanvasElement}
  */
 export function renderSeatingChart(state, { scale = 2 } = {}) {
@@ -44,14 +44,14 @@ export function renderSeatingChart(state, { scale = 2 } = {}) {
   const byId = new Map(state.students.list.map(s => [s.id, s]));
   const locked = new Set(state.locks);
 
-  /* ---------- 尺寸规划 ---------- */
+  /* ---------- Dimension planning ---------- */
   const W = 1600;
   const pad = 56;
   const aisleW = 34;
   const gridGap = 12;
   const seatW = Math.floor((W - pad * 2 - aisleW * layout.aisles.length
     - gridGap * (layout.seatCols - 1)) / layout.seatCols);
-  const seatH = seatW; // 正方形座位卡
+  const seatH = seatW; // square seat card
   const nameFont = Math.round(seatW * 0.26);
 
   const titleH = 76, podiumH = 64, podiumGap = 26, legendH = 64;
@@ -64,18 +64,18 @@ export function renderSeatingChart(state, { scale = 2 } = {}) {
   const ctx = canvas.getContext('2d');
   ctx.scale(scale, scale);
 
-  // 白底（打印友好）
+  // White background (print-friendly)
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, W, H);
   ctx.textBaseline = 'middle';
 
-  /* ---------- 标题 ---------- */
+  /* ---------- Title ---------- */
   ctx.fillStyle = C.text;
   ctx.font = `700 30px ${FONT}`;
   ctx.textAlign = 'center';
   ctx.fillText('教室座位表', W / 2, pad + 26);
 
-  /* ---------- 讲台 ---------- */
+  /* ---------- Podium ---------- */
   const podiumY = pad + titleH;
   const podiumW = Math.min(560, (W - pad * 2) * 0.5);
   const grad = ctx.createLinearGradient(W / 2 - podiumW / 2, podiumY, W / 2 + podiumW / 2, podiumY + podiumH);
@@ -88,7 +88,7 @@ export function renderSeatingChart(state, { scale = 2 } = {}) {
   ctx.font = `600 22px ${FONT}`;
   ctx.fillText('讲　台', W / 2, podiumY + podiumH / 2);
 
-  /* ---------- 座位网格（仅姓名 + 性别色） ---------- */
+  /* ---------- Seat grid (name + gender color only) ---------- */
   const gridTop = podiumY + podiumH + podiumGap;
   const gridW = layout.seatCols * seatW + (layout.seatCols - 1) * gridGap
     + layout.aisles.length * aisleW;
@@ -103,7 +103,7 @@ export function renderSeatingChart(state, { scale = 2 } = {}) {
     return x;
   };
 
-  // 座位号字号（左上角排列号）
+  // Seat number font size (row-column number at the top-left corner)
   const noFont = Math.round(seatW * 0.145);
 
   for (const seat of seats) {
@@ -130,13 +130,13 @@ export function renderSeatingChart(state, { scale = 2 } = {}) {
       ctx.stroke();
     }
 
-    // 左上角排列号（下移留出呼吸空间）
+    // Row-column number at the top-left corner (nudged down for breathing room)
     ctx.font = `400 ${noFont}px ${FONT}`;
     ctx.fillStyle = C.text3;
     ctx.textAlign = 'left';
     ctx.fillText(`${seat.row}-${seat.col}`, x + 9, y + 19);
 
-    // 姓名（居中，自适应字号；避开角标略下移）
+    // Name (centered, auto-fitted font size; shifted slightly down to clear the corner badge)
     if (s) {
       let fs = nameFont;
       ctx.font = `600 ${fs}px ${FONT}`;
@@ -150,14 +150,14 @@ export function renderSeatingChart(state, { scale = 2 } = {}) {
     }
   }
 
-  /* ---------- 底部说明：图例（蓝=男生 / 粉=女生）+ 数量统计（男女带色点） ---------- */
+  /* ---------- Footer: legend (blue = boys / pink = girls) + counts (colored dots for boys/girls) ---------- */
   const legendY = gridTop + gridH + 40;
   const seated = Object.keys(state.assignment).length;
   const male = state.students.list.filter(s => s.gender === '男').length;
   const female = state.students.list.length - male;
   const legendFont = 15;
 
-  // 左侧图例：色块 + 文字
+  // Left side legend: color swatch + label
   ctx.font = `400 ${legendFont}px ${FONT}`;
   let lx = pad;
   const legendItem = (bg, border, label) => {
@@ -175,7 +175,7 @@ export function renderSeatingChart(state, { scale = 2 } = {}) {
   legendItem(C.maleBg, C.male, '男生');
   legendItem(C.femaleBg, C.female, '女生');
 
-  // 右侧统计：座位/学生/男/女（男女前置色点）
+  // Right side stats: seats/students/boys/girls (colored dot before boys/girls counts)
   const dot = (cx, cy, color, r = 6) => {
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
@@ -207,7 +207,7 @@ export function renderSeatingChart(state, { scale = 2 } = {}) {
   return canvas;
 }
 
-/** 导出 PNG 图片 */
+/** Export as a PNG image */
 export function exportSeatImage(state) {
   const canvas = renderSeatingChart(state);
   const downloadViaDataUrl = () => {

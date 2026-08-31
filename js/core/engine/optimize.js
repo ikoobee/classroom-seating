@@ -1,12 +1,13 @@
 /**
- * 局部搜索优化：爬山 + 模拟退火混合
- * 优化目标 = 软规则总分 − 硬冲突罚分（驱动初始解中的硬冲突被主动修复）
+ * Local-search optimization: hill climbing blended with simulated annealing.
+ * Objective = soft-rule total score − hard-conflict penalty (which actively
+ * drives hard conflicts in the initial solution to be repaired)
  */
 import { evaluate } from './evaluate.js';
 import { randomMove, applyMove, revertMove, affectedStudents } from './moves.js';
 import { isMoveAcceptable } from './constraints.js';
 
-const HARD_PENALTY = 25; // 每项硬冲突罚 25 分
+const HARD_PENALTY = 25; // 25-point penalty per hard violation
 
 const objective = (ctx, bySeat, byStudent) => {
   const s = evaluate(ctx, bySeat, byStudent);

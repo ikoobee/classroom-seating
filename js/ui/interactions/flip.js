@@ -1,6 +1,6 @@
 /**
- * FLIP 动画：First → Last → Invert → Play
- * 依赖 classroom 按 studentId 复用卡片元素；布局重建场景请勿使用
+ * FLIP animation: First → Last → Invert → Play
+ * Relies on the classroom view reusing card elements by studentId; do not use for layout rebuilds
  */
 
 const reducedMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
@@ -8,7 +8,7 @@ const reducedMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce
 export function withFlip(container, mutate) {
   if (reducedMotion() || !container) { mutate(); return; }
 
-  // First：记录旧位置
+  // First: record old positions
   const first = new Map();
   for (const el of container.querySelectorAll('.student-card')) {
     first.set(el.dataset.studentId, el.getBoundingClientRect());
@@ -16,10 +16,10 @@ export function withFlip(container, mutate) {
 
   container.classList.add('flipping');
 
-  // Last：执行状态变更 + DOM 更新（同步）
+  // Last: apply the state change + DOM update (synchronous)
   mutate();
 
-  // Invert：新位置就绪后把卡片瞬时拉回旧位置
+  // Invert: once new positions are in place, instantly snap cards back to their old positions
   const plays = [];
   for (const el of container.querySelectorAll('.student-card')) {
     const f = first.get(el.dataset.studentId);
@@ -36,7 +36,7 @@ export function withFlip(container, mutate) {
     plays.push(el);
   }
 
-  // Play：双 rAF 后释放过渡回 0
+  // Play: after a double rAF, release the transition back to 0
   requestAnimationFrame(() => requestAnimationFrame(() => {
     container.classList.remove('flipping');
     for (const el of plays) {

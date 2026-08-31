@@ -1,5 +1,5 @@
 /**
- * 入口：装配 App 并启动
+ * Entry point: assemble the App and boot it
  */
 import { App } from './app.js';
 
@@ -9,7 +9,7 @@ window.addEventListener('error', e => {
 
 try {
   const app = new App();
-  window.seatingApp = app; // 调试入口
+  window.seatingApp = app; // debug handle
   const boot = () => app.boot();
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();

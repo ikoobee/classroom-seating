@@ -1,5 +1,5 @@
 /**
- * 通用模态框：栈式管理、Esc 关闭、焦点管理
+ * Generic modal: stack management, Esc to close, focus management
  */
 import { h } from '../dom.js';
 
@@ -44,7 +44,7 @@ export function closeModal(modal) { modal?.close(); }
 export function topModal() { return stack[stack.length - 1] ?? null; }
 export function closeAllModals() { while (stack.length) stack[stack.length - 1].close(); }
 
-/** Esc 关闭栈顶模态框 */
+/** Close the top modal on Esc */
 export function handleModalEscape() {
   const top = topModal();
   if (top) { top.close(); return true; }

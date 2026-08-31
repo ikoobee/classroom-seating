@@ -1,6 +1,6 @@
 /**
- * 设置模态框：教室布局（排数/座位列数/模板/过道位置）｜显示与保存｜存储与备份
- * 结构：布局卡片（通栏） + 显示/存储双栏，一屏呈现全部内容
+ * Settings modal: classroom layout (rows / seat columns / template / aisle positions) | display & saving | storage & backup
+ * Layout: a full-width layout card + a two-column display/storage grid, everything visible on one screen
  */
 import { h, clearEl, appendKids, fmtTime } from '../dom.js';
 import { openModal, closeModal } from '../components/modal.js';
@@ -18,9 +18,9 @@ const shortSelectStyle = {
   border: '1px solid var(--border)', borderRadius: '7px', background: 'var(--bg-panel)',
 };
 
-/* ---------- 过道模式 ---------- */
+/* ---------- Aisle patterns ---------- */
 
-/** 模式 → 过道位置数组（custom 返回 null，表示保持现状） */
+/** Pattern → aisle position array (custom returns null, meaning "keep as is") */
 export function aislesForPattern(pattern, seatCols) {
   const cols = Math.max(1, Math.min(20, seatCols));
   switch (pattern) {
@@ -39,7 +39,7 @@ export function aislesForPattern(pattern, seatCols) {
   }
 }
 
-/** 从过道位置反推模式（用于下拉回显） */
+/** Infer the pattern back from aisle positions (to echo it in the dropdown) */
 export function patternFromAisles(aisles, seatCols) {
   const cur = [...(aisles || [])].sort((a, b) => a - b).join(',');
   if (!cur) return 'none';
@@ -64,7 +64,7 @@ export function openSettingsModal(app) {
   const state = store.getState();
   const layout = { ...state.layout, aisles: [...state.layout.aisles] };
 
-  /* ---------- 教室布局卡片：模板 / 排数·列数下拉 / 过道模式下拉 ---------- */
+  /* ---------- Classroom layout card: template / rows·columns selects / aisle pattern select ---------- */
 
   const rowsSelect = h('select', { style: shortSelectStyle },
     Array.from({ length: 15 }, (_, i) => i + 1)
@@ -102,7 +102,7 @@ export function openSettingsModal(app) {
   function applyPattern(pattern) {
     aislePattern = pattern;
     const next = aislesForPattern(pattern, curCols());
-    if (next) layout.aisles = next; // custom 返回 null，保持现状
+    if (next) layout.aisles = next; // custom returns null; keep current aisles
     syncAisleUI();
   }
 
@@ -130,7 +130,7 @@ export function openSettingsModal(app) {
 
   aisleSelect.addEventListener('change', () => applyPattern(aisleSelect.value));
   colsSelect.addEventListener('change', () => {
-    // 列数变化：按当前模式重算过道（自定义则裁剪越界）
+    // Column count changed: recompute aisles for the current pattern (custom gets trimmed back into bounds)
     if (aislePattern !== 'custom') {
       applyPattern(aislePattern);
     } else {
@@ -144,7 +144,7 @@ export function openSettingsModal(app) {
   const layoutCard = h('div', { class: 'setting-card' },
     h('div', { class: 'setting-card-title' }, '🏫 教室布局'),
 
-    // 模板行（预设 + 自定义占位；回显当前模板）
+    // Template row (presets + custom placeholder; echoes the current template)
     h('div', { class: 'setting-row' },
       h('span', { class: 'setting-label' }, '快速模板'),
       h('select', {
@@ -171,7 +171,7 @@ export function openSettingsModal(app) {
         }, t.name)),
         h('option', { value: '__custom__' }, '自定义（下方手动调整）'))),
 
-    // 尺寸行：排数 / 列数 下拉
+    // Size row: rows / columns selects
     h('div', { class: 'setting-row' },
       h('span', { class: 'setting-label' }, '教室尺寸'),
       h('div', { style: { display: 'flex', gap: 12, alignItems: 'center', flex: 1, flexWrap: 'wrap' } },
@@ -180,7 +180,7 @@ export function openSettingsModal(app) {
         h('label', { class: 'field-inline' }, '每排座位', colsSelect),
         seatCountHint)),
 
-    // 过道行：模式下拉（自定义时显示细位 chips）
+    // Aisle row: pattern select (per-position chips are shown in custom mode)
     h('div', { class: 'setting-row', style: { alignItems: 'flex-start' } },
       h('span', { class: 'setting-label', style: { paddingTop: 6 } }, '过道位置'),
       h('div', { style: { flex: 1, minWidth: 0 } },
@@ -188,7 +188,7 @@ export function openSettingsModal(app) {
         aisleBox,
         aisleDesc)),
 
-    // 应用行
+    // Apply row
     h('div', { style: { display: 'flex', alignItems: 'center', gap: 12, marginTop: 16, paddingTop: 14, borderTop: '1px solid var(--border)', flexWrap: 'wrap' } },
       h('button', {
         class: 'btn btn-primary',
@@ -204,7 +204,7 @@ export function openSettingsModal(app) {
       h('span', { style: { fontSize: 11.5, color: 'var(--warning)', lineHeight: 1.5 } }, '缩小布局会移除越界座位上的学生')),
   );
 
-  /* ---------- 显示与保存卡片 ---------- */
+  /* ---------- Display & saving card ---------- */
 
   const settings = { ...state.settings };
   const switchRow = (label, key, hint) => {
@@ -234,7 +234,7 @@ export function openSettingsModal(app) {
     }, '💡 快捷键：Ctrl+S 立即保存　Ctrl+Z / Y 撤销重做　Esc 关闭弹窗'),
   );
 
-  /* ---------- 存储与备份卡片 ---------- */
+  /* ---------- Storage & backup card ---------- */
 
   const storageBox = h('div');
   const renderStorage = () => {
@@ -299,7 +299,7 @@ export function openSettingsModal(app) {
     storageBox,
   );
 
-  /* ---------- 组装 ---------- */
+  /* ---------- Assembly ---------- */
 
   const modal = openModal({
     title: '⚙️ 设置',

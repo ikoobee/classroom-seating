@@ -1,5 +1,5 @@
 /**
- * 统计仪表盘：属性分布环形/条形图 + 行×列热力图（维度切换）
+ * Statistics dashboard: attribute distribution donut/bar charts + row×column heatmap (switchable dimension)
  */
 import { h, clearEl } from '../dom.js';
 import { openModal, closeModal } from '../components/modal.js';
@@ -16,7 +16,7 @@ const HEAT_DIMS = [
   ['academic', '成绩'], ['personality', '性格'], ['annotation', '标注'],
 ];
 
-/** 解析 CSS 变量为实际 hex，返回 [边框色, 18% 透明度背景色] */
+/** Resolve a CSS variable to an actual hex value; returns [border color, 18%-alpha background color] */
 function resolveColors(color) {
   let v = color;
   if (v.startsWith('var(')) {
@@ -60,7 +60,7 @@ export function openDashboardModal(app) {
     footer: [h('button', { class: 'btn', onclick: () => closeModal(modal) }, '关闭')],
   });
 
-  /** 维度取值 → 统一颜色（图表与热力图共用） */
+  /** Dimension value → unified color (shared by charts and the heatmap) */
   function dimColor(dim, value) {
     if (value == null) return 'var(--border-strong)';
     if (dim === 'personality') {
@@ -78,7 +78,7 @@ export function openDashboardModal(app) {
     const dist = attributeDistribution(state.students.list);
     clearEl(chartsBox);
 
-    // 条形图与热力图使用同一 dimColor，保证颜色一致
+    // Bar charts and the heatmap share the same dimColor to keep colors consistent
     const barCard = (title, map, order, dim) => {
       const data = (order ?? [...map.keys()])
         .map(k => [k, map.get(k) ?? 0, dimColor(dim, k)]);
@@ -117,8 +117,8 @@ export function openDashboardModal(app) {
     const table = h('div', {
       style: { display: 'grid', gap: 4, gridTemplateColumns: `auto repeat(${colCount}, 1fr)` },
     });
-    table.append(h('div', {})); // 角落
-    // 列头：座位列 + 过道间隙
+    table.append(h('div', {})); // Top-left corner cell
+    // Column headers: seat columns + aisle gaps
     for (let c = 1; c <= state.layout.seatCols; c++) {
       table.append(h('div', { style: { fontSize: 10, color: 'var(--text-3)', textAlign: 'center' } }, `列${c}`));
       if (state.layout.aisles.includes(c)) {

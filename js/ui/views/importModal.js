@@ -1,5 +1,5 @@
 /**
- * 导入模态框：Excel（列映射预览确认，全字段导入）/ JSON 恢复 / 模板下载
+ * Import modal: Excel (column-mapping preview with confirmation, all fields importable) / JSON restore / template download
  */
 import { h, clearEl } from '../dom.js';
 import { openModal, closeModal } from '../components/modal.js';
@@ -41,11 +41,11 @@ export function openImportModal(app) {
     footer: [h('button', { class: 'btn', onclick: () => closeModal(modal) }, '关闭')],
   });
 
-  /* ---------- Excel 流程：解析 → 列映射预览 → 确认导入 ---------- */
+  /* ---------- Excel flow: parse → column-mapping preview → confirm import ---------- */
 
   fileInput.addEventListener('change', async () => {
     const file = fileInput.files[0];
-    fileInput.value = ''; // 允许重复选择同一文件（仅此一处监听，不会重复触发）
+    fileInput.value = ''; // Allow re-selecting the same file (this is the only listener, so it can't double-fire)
     if (!file) return;
     try {
       const { headers, rows, suggested } = await parseTableFile(file);
@@ -112,7 +112,7 @@ export function openImportModal(app) {
     );
   }
 
-  /* ---------- JSON 恢复 ---------- */
+  /* ---------- JSON restore ---------- */
 
   jsonInput.addEventListener('change', async () => {
     const file = jsonInput.files[0];
@@ -139,7 +139,7 @@ export function openImportModal(app) {
   return modal;
 }
 
-/** 整体应用一个完整状态（迁移 / 恢复） */
+/** Apply a complete state in one shot (migration / restore) */
 export function applyFullState(app, data) {
   const cur = app.store.getState();
   app.store.dispatch({ type: 'HYDRATE', state: { ...cur, ...data } });

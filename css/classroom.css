@@ -1,4 +1,4 @@
-/* ============ 教室区域 ============ */
+/* ============ Classroom area ============ */
 .podium {
   width: min(440px, 62%);
   padding: 10px 0;
@@ -17,11 +17,11 @@
   display: grid;
   gap: 8px;
   align-content: start;
-  /* 不用 flex:1——网格按内容撑开，超出时由教室容器滚动，避免内容溢出遮挡状态条 */
+  /* no flex:1 — the grid sizes to its content; the classroom container scrolls on overflow so content never covers the status bar */
 }
 
 .grid-cell.aisle {
-  /* 过道占位格：斜纹仅提示，不承载座位 */
+  /* aisle placeholder cell: stripes are only a hint, no seat lives here */
   background: repeating-linear-gradient(45deg, transparent 0 6px, var(--grid-line) 6px 8px);
   border-radius: var(--radius-sm);
   opacity: .45;
@@ -55,12 +55,12 @@
   background: var(--success-soft);
 }
 
-/* ---- 学生卡（座位内） ---- */
+/* ---- Student card (inside a seat) ---- */
 .student-card {
   width: calc(100% - 6px);
   height: calc(100% - 6px);
   border-radius: 6px;
-  /* 姓名始终绝对居中：卡片本体只承载姓名，图标行与职务标签为悬浮层 */
+  /* name always perfectly centered: the card body holds only the name; icon row and duty badge are floating overlays */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -75,7 +75,7 @@
 .student-card.gender-m { border-color: var(--male); background: var(--male-soft); }
 .student-card.gender-f { border-color: var(--female); background: var(--female-soft); }
 
-/* 标注色：左侧色条 */
+/* annotation colors: left color bar */
 .student-card.anno-red    { box-shadow: inset 4px 0 0 var(--anno-red); }
 .student-card.anno-orange { box-shadow: inset 4px 0 0 var(--anno-orange); }
 .student-card.anno-yellow { box-shadow: inset 4px 0 0 var(--anno-yellow); }
@@ -92,7 +92,7 @@
   line-height: 1.25;
 }
 
-/* 图标行：底部悬浮（不影响姓名居中）。永不换行——最多 3 个学生属性图标 */
+/* icon row: floats at the bottom (doesn't affect name centering). Never wraps — at most 3 attribute icons */
 .student-card .sc-meta {
   position: absolute;
   bottom: 3px;
@@ -111,7 +111,7 @@
   white-space: nowrap;
 }
 
-/* 锁定标识：卡片左上角迷你胶囊（与右上角职务标签同款视觉：同 offset / 同白底圆角） */
+/* lock indicator: mini pill at the card's top-left (same visual as the top-right duty badge: same offset / same white rounded background) */
 .seat.locked .student-card::after {
   content: '🔒';
   position: absolute;
@@ -124,19 +124,19 @@
   background: rgba(255, 255, 255, .72);
 }
 
-/* 带标注色条（左侧 inset 4px）时右移，避免压住色条 */
+/* shift right when the annotation bar (left inset 4px) is present, to avoid covering it */
 .seat.locked .student-card:is(.anno-red, .anno-orange, .anno-yellow, .anno-green, .anno-purple)::after {
   left: 8px;
 }
 
-/* 空座位锁定：座位号后缀显示（空座无卡片，座位号可见） */
+/* locked empty seat: shown as a suffix on the seat number (empty seats have no card, so the number stays visible) */
 .seat.locked .seat-no::after {
   content: ' 🔒';
 }
 
 .sc-ic { }
 
-/* 职务：右上角小标签（不截断字数，超宽时以省略号兜底） */
+/* duty: small badge at top-right (no length cap; ellipsis fallback when too wide) */
 .sc-badge {
   position: absolute;
   top: 3px;
@@ -165,7 +165,7 @@
   line-height: 1.2;
 }
 
-/* FLIP 动画期间抑制其它过渡 */
+/* suppress other transitions during FLIP animation */
 .seat-grid.flipping .student-card { transition: none !important; }
 .student-card.flip-playing { transition: transform .38s cubic-bezier(.2, .8, .2, 1) !important; z-index: 5; }
 .student-card.enter-anim { animation: seat-enter .3s ease; }
@@ -174,11 +174,11 @@
   to   { transform: scale(1); opacity: 1; }
 }
 
-/* 锁定模式提示 */
+/* lock-mode hint */
 body.lock-mode .seat { border-color: var(--warning); }
 body.lock-mode .classroom-wrap { outline: 2px dashed var(--warning); outline-offset: -5px; }
 
-/* ---- 状态条（吸底：滚动时始终可见，且不被座位内容遮挡） ---- */
+/* ---- Status bar (sticks to bottom: always visible while scrolling, never covered by seat content) ---- */
 .status-bar {
   display: flex;
   gap: 16px;

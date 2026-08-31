@@ -1,4 +1,4 @@
-/* ============ 整体布局 ============ */
+/* ============ Overall layout ============ */
 #app {
   height: 100vh;
   display: flex;
@@ -33,9 +33,9 @@
   padding: 14px 4px; gap: 12px;
 }
 .side-left.collapsed .panel-head h3 { writing-mode: vertical-rl; letter-spacing: 6px; font-size: 12px; }
-/* 折叠时隐藏辅助按钮，仅保留展开按钮（»），避免超出窄条宽度 */
+/* when collapsed, hide helper buttons and keep only the expand button (») so nothing overflows the narrow strip */
 .side-left.collapsed .panel-head .btn-ghost:not(.rules-toggle) { display: none; }
-/* 折叠/展开按钮：两种状态同尺寸的方形按钮 */
+/* collapse/expand button: a square button of identical size in both states */
 .side-left .rules-toggle {
   width: 28px; height: 28px; padding: 0; font-size: 15px;
   display: inline-flex; align-items: center; justify-content: center;
@@ -60,7 +60,7 @@
   overflow: auto;
 }
 
-/* 响应式：窄屏时侧栏折叠为可滚动堆叠 */
+/* responsive: on narrow screens, side panels stack into scrollable sections */
 @media (max-width: 1080px) {
   body { overflow: auto; }
   #app { height: auto; min-height: 100vh; }

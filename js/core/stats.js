@@ -1,5 +1,6 @@
 /**
- * 分布统计与热力图数据聚合（UI 仪表盘 / Excel 导出共用）
+ * Distribution statistics and heatmap data aggregation
+ * (shared by the UI dashboard and Excel export)
  */
 import { activeSeats } from './grid.js';
 
@@ -12,7 +13,7 @@ function countBy(list, key) {
   return m;
 }
 
-/** 学生属性分布（供环形图/条形图） */
+/** Student attribute distributions (for donut/bar charts) */
 export function attributeDistribution(students) {
   return {
     gender: countBy(students, s => s.gender),
@@ -25,7 +26,7 @@ export function attributeDistribution(students) {
   };
 }
 
-/** 各维度在行列上的分布（热力图）。返回 rows×seatCols 矩阵（过道后插入 {aisle:true} 间隙格），值为 {value} 或 null（空座位） */
+/** Per-dimension distribution across rows/columns (heatmap). Returns a rows×seatCols matrix (with an {aisle:true} gap cell inserted after each aisle column); cells are {value} or null (empty seat) */
 export function seatHeatmap(layout, assignment, studentsById, dimension) {
   const byId = studentsById;
   const grid = [];
@@ -55,7 +56,7 @@ export function seatHeatmap(layout, assignment, studentsById, dimension) {
   return grid;
 }
 
-/** 教室概况统计 */
+/** Classroom summary statistics */
 export function classroomSummary(state) {
   const seats = activeSeats(state.layout);
   const seated = Object.keys(state.assignment).filter(seat =>

@@ -1,5 +1,5 @@
 /**
- * 完整数据备份/恢复（JSON 文件）
+ * Full data backup/restore (JSON files)
  */
 import { initialState } from '../store/reducers.js';
 import { normalizeRelations } from '../core/relations.js';
@@ -24,7 +24,7 @@ export function exportCompleteData(state) {
   }, null, 2);
 }
 
-/** 校验并归一化导入的 JSON，失败抛错 */
+/** Validate and normalize imported JSON; throws on failure */
 export function parseCompleteData(text) {
   let obj;
   try { obj = JSON.parse(text); } catch { throw new Error('不是有效的 JSON 文件'); }
@@ -32,7 +32,7 @@ export function parseCompleteData(text) {
   if (!d || !Array.isArray(d.students?.list ?? d.students)) {
     throw new Error('文件格式不符：缺少 students 数据');
   }
-  // 兼容 list 数组或 {list} 两种形态
+  // Accept both shapes: a plain list array or { list }
   const list = Array.isArray(d.students) ? d.students : (d.students.list ?? []);
   let nextId = 1;
   if (d.students && !Array.isArray(d.students) && Number.isInteger(d.students.nextId)) {

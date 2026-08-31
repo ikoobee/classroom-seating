@@ -1,5 +1,5 @@
 /**
- * 纯 SVG 图表：环形图 / 条形图（无需图表库）
+ * Pure SVG charts: donut / bar charts (no chart library needed)
  */
 import { h } from '../dom.js';
 
@@ -7,7 +7,7 @@ export const PALETTE = ['#2563eb', '#f472b6', '#16a34a', '#d97706', '#a855f7', '
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
-/** SVG 元素工厂（必须用 createElementNS，否则浏览器不渲染） */
+/** SVG element factory (must use createElementNS, otherwise the browser won't render it) */
 function svgEl(tag, attrs = {}, ...children) {
   const el = document.createElementNS(SVG_NS, tag);
   for (const [k, v] of Object.entries(attrs)) {
@@ -21,7 +21,7 @@ function svgEl(tag, attrs = {}, ...children) {
   return el;
 }
 
-/** 环形图。data: [[label, value, color?], ...] */
+/** Donut chart. data: [[label, value, color?], ...] */
 export function donut(data, { size = 120, thickness = 20 } = {}) {
   const total = data.reduce((s, [, v]) => s + v, 0);
   const r = (size - thickness) / 2;
@@ -58,7 +58,7 @@ export function donut(data, { size = 120, thickness = 20 } = {}) {
   return h('div', { style: { position: 'relative', width: size, height: size, margin: '0 auto' } }, svg, num);
 }
 
-/** 水平条形图（HTML 实现）。data: [[label, value, color?], ...]，max 最大刻度 */
+/** Horizontal bar list (HTML implementation). data: [[label, value, color?], ...]; max is the scale maximum */
 export function barList(data, { max } = {}) {
   const m = max ?? Math.max(1, ...data.map(([, v]) => v));
   return h('div', {}, data.map(([label, value, color], i) => h('div', { class: 'bar-row' },
@@ -69,7 +69,7 @@ export function barList(data, { max } = {}) {
   )));
 }
 
-/** 维度评分条（带权重标识） */
+/** Dimension score bar (with weight label) */
 export function dimBar(name, score, weight) {
   const color = score >= 80 ? 'var(--success)' : score >= 50 ? 'var(--warning)' : 'var(--danger)';
   return h('div', { class: 'dim-bar' },

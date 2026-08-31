@@ -1,5 +1,5 @@
 /**
- * 候选方案对比模态框：N 个方案表格 + 迷你教室预览 + 应用
+ * Candidate comparison modal: table of N candidates + mini classroom preview + apply
  */
 import { h, clearEl, appendKids } from '../dom.js';
 import { openModal, closeModal } from '../components/modal.js';
@@ -42,7 +42,7 @@ export function openCandidatesModal(app, result, prevBaseline, onApply) {
     clearEl(previewBox);
     clearEl(detailBox);
 
-    // 迷你教室（座位列 + 过道间隙）
+    // Mini classroom (seat columns + aisle gaps)
     const state = app.store.getState();
     const layout = state.layout;
     const gridCols = [];
@@ -69,7 +69,7 @@ export function openCandidatesModal(app, result, prevBaseline, onApply) {
       mini,
     );
 
-    // 维度对比
+    // Dimension comparison
     appendKids(detailBox,
       h('div', { style: { fontWeight: 600, fontSize: 13, margin: '18px 0 10px' } }, '维度得分'),
       selected.score.dimensions.map(d => dimBar(d.name, d.score, d.weight)),

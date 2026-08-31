@@ -1,5 +1,6 @@
 /**
- * 初始解构造：锁定固定 → 好友对成对落座 → 启发式排序填充 → 兜底
+ * Initial solution construction: pin locked seats → seat friend pairs together
+ * → heuristic ordered fill → fallback
  */
 import { HEIGHT_ORDER } from '../constants.js';
 
@@ -12,7 +13,7 @@ function pairUrgency(ctx, p) {
   if (a.vision === '近视' || b.vision === '近视') u += 2;
   if (a.personality === '调皮' || b.personality === '调皮') u += 2;
   if (a.height === '矮' || b.height === '矮') u += 1;
-  return -u; // 越小越紧急
+  return -u; // smaller = more urgent
 }
 
 /**
@@ -24,12 +25,12 @@ export function constructInitial(ctx, rng) {
   const set = (seatId, studentId) => { bySeat.set(seatId, studentId); byStudent.set(studentId, seatId); };
   const warnings = [];
 
-  // 1. 锁定座位固定
+  // 1. Pin locked seats
   for (const [seat, sid] of Object.entries(ctx.lockedAssignment)) set(seat, sid);
   const usedSeats = new Set(Object.keys(ctx.lockedAssignment));
   const usedStudents = new Set(Object.values(ctx.lockedAssignment));
 
-  // 2. 好友对成对落座（双方均可动才处理；单方/双方锁定在 precheck 中给警告）
+  // 2. Seat friend pairs together (only when both sides are movable; one/both locked is warned in precheck)
   const nameOf = id => ctx.byId.get(id)?.name ?? `#${id}`;
   const friendPairs = ctx.relations.friends
     .filter(p => ctx.byId.has(p.a) && ctx.byId.has(p.b)
@@ -52,7 +53,7 @@ export function constructInitial(ctx, rng) {
     }
     let best;
     if (pairUrgency(ctx, p) < 0) {
-      best = candidates.reduce((m, e) => e.a.row < m.a.row ? e : m); // 紧急对尽量靠前
+      best = candidates.reduce((m, e) => e.a.row < m.a.row ? e : m); // urgent pairs go as far forward as possible
     } else {
       const avgH = ((HEIGHT_ORDER[a.height] ?? 1) + (HEIGHT_ORDER[b.height] ?? 1)) / 2;
       const targetRow = Math.max(1, Math.min(ctx.rows, Math.round((avgH / 2) * ctx.rows)));
@@ -63,7 +64,7 @@ export function constructInitial(ctx, rng) {
     usedStudents.add(p.a); usedStudents.add(p.b);
   }
 
-  // 3. 其余学生按优先级（近视/调皮/矮个靠前）+ 随机抖动排序，行优先填充
+  // 3. Fill the remaining students by priority (nearsighted / naughty / short up front) + random jitter, row-major
   const rest = ctx.students.filter(s => !usedStudents.has(s.id));
   const priority = s =>
     (s.vision === '近视' ? 30 : 0)
@@ -76,7 +77,7 @@ export function constructInitial(ctx, rng) {
   const freeSeats = ctx.seats.filter(s => !usedSeats.has(s.id))
     .sort((x, y) => x.row - y.row || x.col - y.col);
 
-  /** 座位与已落座的左/前邻居是否构成黑名单冲突 */
+  /** Whether the seat creates a blacklist conflict with its already-seated left/front neighbors */
   const conflictsPlaced = (seat, s) => {
     const blacks = ctx.relationIndex.blackOf.get(s.id);
     if (!blacks) return false;
@@ -85,7 +86,7 @@ export function constructInitial(ctx, rng) {
     for (const { partner, noFrontBack } of blacks) {
       const lOcc = left ? bySeat.get(left.id) : undefined;
       const fOcc = front ? bySeat.get(front.id) : undefined;
-      if (lOcc === partner) return true; // 同桌冲突
+      if (lOcc === partner) return true; // deskmate conflict
       if (noFrontBack && fOcc === partner) return true;
     }
     return false;
@@ -95,7 +96,7 @@ export function constructInitial(ctx, rng) {
   let overflow = 0;
   for (const s of rest) {
     if (idx >= freeSeats.length) { overflow++; continue; }
-    // 找下一个满足 zone 且不与已落座邻居黑名单冲突的座位
+    // Find the next seat that satisfies the zone and has no blacklist conflict with seated neighbors
     let j = idx;
     while (j < freeSeats.length) {
       const cand = freeSeats[j];
@@ -103,7 +104,7 @@ export function constructInitial(ctx, rng) {
       if (!zoneMiss && !conflictsPlaced(cand, s)) break;
       j++;
     }
-    if (j >= freeSeats.length) j = idx; // 找不到则兜底用当前位置（交给优化阶段修复）
+    if (j >= freeSeats.length) j = idx; // fallback: keep the current position (the optimizer will repair)
     const seat = freeSeats[j];
     [freeSeats[idx], freeSeats[j]] = [freeSeats[j], freeSeats[idx]];
     set(seat.id, s.id);

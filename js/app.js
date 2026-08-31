@@ -1,5 +1,5 @@
 /**
- * App 装配：创建 store/storage/logger/history/arranger，实例化各视图，负责持久化与主题
+ * App assembly: creates the store/storage/logger/history/arranger, instantiates views, and handles persistence and theming
  */
 import { createStore } from './store/store.js';
 import { reducer, initialState } from './store/reducers.js';
@@ -29,7 +29,7 @@ export class App {
         : '本地存储空间吃紧，已自动清理旧日志详情与备份', 5000);
     });
 
-    // 1. 恢复持久化数据 → 初始状态
+    // 1. Restore persisted data → initial state
     const state = this.loadInitialState();
 
     this.store = createStore(reducer, state);
@@ -43,13 +43,13 @@ export class App {
     this.arranger = createArranger(this);
     this.views = {};
 
-    // 2. 持久化：切片变化 → 防抖写入
+    // 2. Persistence: slice changes → debounced writes
     this.saveTimer = null;
     for (const slice of PERSIST_SLICES) {
       this.store.subscribe(slice, () => this.schedulePersist());
     }
 
-    // 3. 评分徽章维护
+    // 3. Keep the score badge up to date
     for (const slice of ['assignment', 'students', 'rules', 'locks', 'relations']) {
       this.store.subscribe(slice, () => this.arranger.refreshScore());
     }
@@ -60,7 +60,7 @@ export class App {
     const saved = this.storage.loadAll();
     if (!saved) return base;
 
-    // 逐切片合并 + 归一化防御（坏数据不致崩）
+    // Merge slice by slice with defensive normalization (bad data must not crash the app)
     const state = { ...base };
     if (saved.students?.list) state.students = saved.students;
     if (saved.layout) state.layout = normalizeLayout(saved.layout);
@@ -82,32 +82,32 @@ export class App {
   }
 
   boot() {
-    // 主题
+    // Theme
     const applyTheme = () => {
       document.body.classList.toggle('dark-theme', this.store.getState().settings.theme === 'dark');
     };
     applyTheme();
     this.store.subscribe('settings', applyTheme);
 
-    // 视图（顺序：classroom 先建，供 studentsPanel 引用 seatName）
+    // Views (order matters: classroom is built first so studentsPanel can reference seatName)
     this.views.classroom = createClassroomView(this);
     this.views.studentsPanel = createStudentsPanel(this);
     this.views.rulesPanel = createRulesPanel(this);
     this.views.topbar = createTopbar(this);
 
-    // 初始渲染
+    // Initial render
     Object.values(this.views).forEach(v => v.render?.());
     this.arranger.refreshScore();
 
-    // 快捷键
+    // Keyboard shortcuts
     setupShortcuts(this);
 
-    // 页面关闭前强制落盘
+    // Force a flush before the page unloads
     window.addEventListener('beforeunload', () => {
       if (this.store.getState().settings.autoSave) this.persistNow();
     });
 
-    // 首次使用提示
+    // First-use hint
     const state = this.store.getState();
     if (!state.students.list.length) {
       setTimeout(() => toast.info('欢迎使用智能排座！点击右栏「🎲 演示数据」快速生成学生体验全部功能', 6000), 600);

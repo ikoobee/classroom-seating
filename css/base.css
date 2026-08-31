@@ -1,4 +1,4 @@
-/* ============ 基础与主题变量 ============ */
+/* ============ Base & theme variables ============ */
 :root {
   --bg: #f1f5f9;
   --bg-panel: #ffffff;
@@ -23,12 +23,12 @@
   --shadow-lg: 0 10px 40px rgba(15, 23, 42, .18);
   --radius: 10px;
   --radius-sm: 6px;
-  /* 学生卡性别色 */
+  /* student card gender colors */
   --male: #38bdf8;
   --male-soft: #e0f2fe;
   --female: #f472b6;
   --female-soft: #fce7f3;
-  /* 标注色 */
+  /* annotation colors */
   --anno-red: #ef4444;
   --anno-orange: #f97316;
   --anno-yellow: #eab308;

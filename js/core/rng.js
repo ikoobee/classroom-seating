@@ -1,5 +1,6 @@
 /**
- * 种子随机数（mulberry32）——同一 seed 产生同一序列，排座方案可复现
+ * Seeded PRNG (mulberry32) — the same seed yields the same sequence,
+ * so arrangements are reproducible
  */
 export function mulberry32(seed) {
   let a = seed >>> 0;
@@ -11,7 +12,7 @@ export function mulberry32(seed) {
   };
 }
 
-/** Fisher-Yates 洗牌（原地） */
+/** Fisher-Yates shuffle (in place) */
 export function shuffle(arr, rng) {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(rng() * (i + 1));

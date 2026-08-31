@@ -1,5 +1,6 @@
 /**
- * 核心引擎单元测试：网格几何 / 评分器方向性 / 构造与优化 / 硬约束 / 轮换 / 状态与撤销
+ * Core engine unit tests: grid geometry / scorer directionality /
+ * construction & optimization / hard constraints / rotation / state & undo
  */
 import { describe, test, assert, assertEquals, renderResults } from './framework.js';
 import { seatId, parseSeatId, activeSeats, deskEdges, frontBackEdges, frontRowCount, normalizeLayout } from '../js/core/grid.js';
@@ -15,7 +16,7 @@ import { createStore } from '../js/store/store.js';
 import { reducer, initialState } from '../js/store/reducers.js';
 import { createHistory, swapCmd, toggleLockCmd } from '../js/store/history.js';
 
-/* ---------- 工具 ---------- */
+/* ---------- helpers ---------- */
 
 const S = (i, over = {}) => createStudent({ id: i, name: `学生${i}`, ...over });
 
@@ -32,7 +33,7 @@ function makeCfg(students, layout, extra = {}) {
 }
 
 
-/* ---------- 网格几何 ---------- */
+/* ---------- grid geometry ---------- */
 
 describe('网格几何 grid');
 
@@ -46,7 +47,7 @@ test('activeSeats：过道不占座位列，每列都有座位', () => {
   const layout = normalizeLayout({ rows: 2, seatCols: 4, aisles: [2] });
   const seats = activeSeats(layout);
   assertEquals(seats.length, 8, '2 排 × 4 座位列 = 8 个座位');
-  // 每行的列号完整覆盖 1..seatCols
+  // each row's columns fully cover 1..seatCols
   for (let r = 1; r <= 2; r++) {
     const cols = seats.filter(s => s.row === r).map(s => s.col).sort((a, b) => a - b);
     assertEquals(cols.join(','), '1,2,3,4');
@@ -65,7 +66,7 @@ test('normalizeLayout 兼容旧 schema（cols 含过道）', () => {
 test('同桌边不跨过道', () => {
   const layout = normalizeLayout({ rows: 1, seatCols: 4, aisles: [2] });
   const edges = deskEdges(activeSeats(layout), layout.aisles);
-  // 第 2 列后有过道：仅 (1,2) 与 (3,4) 成对
+  // aisle after column 2: only (1,2) and (3,4) pair up
   assertEquals(edges.length, 2);
   const pairs = edges.map(e => `${e.a.col}-${e.b.col}`).sort().join(',');
   assertEquals(pairs, '1-2,3-4');
@@ -75,7 +76,7 @@ test('同桌边不跨过道', () => {
 test('前后边同列相邻行', () => {
   const layout = normalizeLayout({ rows: 3, cols: 2 });
   const edges = frontBackEdges(activeSeats(layout));
-  assertEquals(edges.length, 4); // 2 列 × 2 条
+  assertEquals(edges.length, 4); // 2 columns × 2 edges
   for (const e of edges) {
     assertEquals(e.front.col, e.back.col);
     assertEquals(e.back.row - e.front.row, 1);
@@ -88,7 +89,7 @@ test('frontRowCount 按比例计算且至少 1', () => {
   assertEquals(frontRowCount({ rows: 10 }, 0.5), 5);
 });
 
-/* ---------- 演示数据 ---------- */
+/* ---------- demo data ---------- */
 
 describe('演示数据 datagen');
 
@@ -110,7 +111,7 @@ test('同一种子结果可复现', () => {
   assertEquals(JSON.stringify(a), JSON.stringify(b), '同 seed 应产生相同数据');
 });
 
-/* ---------- 评分器方向性 ---------- */
+/* ---------- scorer directionality ---------- */
 
 describe('评分器 scorers');
 
@@ -122,7 +123,7 @@ test('视力保护：近视学生全在前排 → 满分', () => {
   const layout = { rows: 4, cols: 2 }; // frontRow = round(4*0.3)=1
   const ctx = buildContext(makeCfg(students, layout));
   const bySeat = new Map(), byStudent = new Map();
-  // 近视 1、2 放第 1 排
+  // seat near-sighted students 1 and 2 in row 1
   bySeat.set('1-1', 1); bySeat.set('1-2', 2);
   byStudent.set(1, '1-1'); byStudent.set(2, '1-2');
   const score = evaluate(ctx, bySeat, byStudent);
@@ -161,7 +162,7 @@ test('frontRowRatio 真正生效：比例变化改变前排区', () => {
   assertEquals(ctx2.frontRow, 6);
 });
 
-/* ---------- 构造 + 优化（端到端方向性） ---------- */
+/* ---------- construction + optimization (end-to-end directionality) ---------- */
 
 describe('排座引擎 engine');
 
@@ -172,7 +173,7 @@ test('只开视力保护：优化后近视学生全部进入前排区', () => {
   for (const k of Object.keys(weights)) weights[k] = 0;
   weights.visionProtection = 100;
 
-  // 前排比例 0.5 → 前 3 排共 6 座 ≥ 5 名近视学生
+  // front-row ratio 0.5 -> 3 front rows with 6 seats >= 5 near-sighted students
   const result = generateSolution(
     makeCfg(students, { rows: 6, cols: 2 }, { rules: { weights, frontRowRatio: 0.5 } }),
     123, { maxIter: 6000, timeMs: 400 });
@@ -205,7 +206,7 @@ test('好友对：排座后必须同桌（硬约束）', () => {
 test('一人多条同桌约束：给出明确警告且全部学生仍入座', () => {
   const students = [];
   for (let i = 1; i <= 10; i++) students.push(S(i));
-  // 学生1 同时与 2、3 约束同桌（几何上不可能同时满足）
+  // student 1 is desk-constrained to both 2 and 3 (geometrically impossible to satisfy both)
   const relations = { friends: [{ a: 1, b: 2 }, { a: 1, b: 3 }], blacklist: [] };
   const result = generateSolution(
     makeCfg(students, { rows: 5, cols: 2 }, { relations }),
@@ -214,7 +215,7 @@ test('一人多条同桌约束：给出明确警告且全部学生仍入座', ()
   const seated = new Set(Object.values(result.assignment));
   assertEquals(students.filter(s => !seated.has(s.id)).length, 0, '不应漏排');
   assert(result.warnings.some(w => w.includes('同桌')), '应包含同桌冲突警告: ' + result.warnings.join(';'));
-  // 至少满足其一：1 与 2 或 1 与 3 同桌
+  // at least one holds: 1 with 2, or 1 with 3
   const byStudent = new Map(Object.entries(result.assignment).map(([seat, sid]) => [sid, seat]));
   const ctx = buildContext(makeCfg(students, { rows: 5, cols: 2 }, { relations }));
   assert(isDeskPair(ctx, byStudent.get(1), byStudent.get(2))
@@ -257,14 +258,14 @@ test('学生多于座位：返回 fatal', () => {
   assert(result.fatal.length >= 1, '应有 fatal 信息');
 });
 
-/* ---------- 轮换 ---------- */
+/* ---------- rotation ---------- */
 
 describe('轮换 rotation');
 
 const lockSet = ids => new Set(ids);
 
 test('整体右移：学生向右移动一格，排尾绕回排首', () => {
-  // 1 排 3 列，无锁定
+  // 1 row × 3 columns, no locks
   const seats = activeSeats(normalizeLayout({ rows: 1, cols: 3 }));
   const assignment = { '1-1': 11, '1-2': 22, '1-3': 33 };
   const { assignment: next } = applyRotation(seats, lockSet([]), assignment, 'shiftRight');
@@ -286,7 +287,7 @@ test('整排后移：第一排学生到第二排', () => {
   const seats = activeSeats(normalizeLayout({ rows: 3, cols: 2 }));
   const assignment = { '1-1': 11, '2-1': 21 };
   const { assignment: next } = applyRotation(seats, lockSet([]), assignment, 'rowBackward');
-  // 列 1 循环：1-1 → 2-1 → 3-1 → 1-1（学生沿循环前进一位）
+  // column-1 cycle: 1-1 -> 2-1 -> 3-1 -> 1-1 (each student advances one step along the cycle)
   assertEquals(next['2-1'], 11, '1-1 的学生应到 2-1');
   assertEquals(next['3-1'], 21, '2-1 的学生应到 3-1（3-1 空位也参与循环）');
 });
@@ -298,7 +299,7 @@ test('锁定座位轮换时纹丝不动（不迁出、不被迁入）', () => {
   const { assignment: next } = applyRotation(seats, locks, assignment, 'shiftRight');
   assertEquals(next['1-2'], 22, '锁定座位上的学生不动');
   assertEquals(next['1-3'], 11, '1-1 → 1-2？不，1-2 锁定，应滑过到 1-3');
-  // 1-2 被锁定后，1-1 的迁移目标顺延
+  // with 1-2 locked, 1-1's move target shifts past it
   assertEquals(next['1-1'], 33, '1-3 → 1-1 绕回');
 });
 
@@ -315,7 +316,7 @@ test('轮换映射是双射（无碰撞）', () => {
 test('蛇形轮换：队尾绕回队首', () => {
   const seats = activeSeats(normalizeLayout({ rows: 2, cols: 2 }));
   const assignment = { '1-1': 11, '1-2': 22, '2-2': 33, '2-1': 44 };
-  // 蛇形序：1-1 → 1-2 → 2-2 → 2-1 → 回 1-1
+  // snake order: 1-1 -> 1-2 -> 2-2 -> 2-1 -> back to 1-1
   const { assignment: next } = applyRotation(seats, lockSet([]), assignment, 'snake');
   assertEquals(next['1-2'], 11);
   assertEquals(next['2-2'], 22);
@@ -389,7 +390,7 @@ test('规则权重越界被钳制', () => {
   assertEquals(store.getState().rules.frontRowRatio, 0.9);
 });
 
-/* ---------- Excel 导入 ---------- */
+/* ---------- Excel import ---------- */
 
 describe('Excel 导入 excel');
 
@@ -422,7 +423,7 @@ test('异常值容错：未知枚举回落默认值', () => {
   assert(Array.isArray(s.tags) && s.tags.length === 0);
 });
 
-/* ---------- 引擎健壮性回归（pairSwap 相邻边共享座位 bug 的回归验证） ---------- */
+/* ---------- engine robustness regression (covers the pairSwap adjacent-edges-shared-seat bug) ---------- */
 
 describe('引擎健壮性回归');
 
@@ -440,7 +441,7 @@ test('多种子运行：任何配置下都不漏排学生（双射不变量）',
     const missing = students.filter(s => !seatedIds.has(s.id));
     assertEquals(missing.length, 0,
       `seed ${seed} 漏排 ${missing.length} 人（${missing.slice(0, 3).map(m => m.name).join(',')}）——pairSwap 邻边共享座位回归`);
-    // 座位不重复
+    // no duplicate seat assignments
     assertEquals(seatedIds.size, Object.values(result.assignment).length, `seed ${seed} 学生重复入座`);
   }
 });

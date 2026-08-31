@@ -1,5 +1,5 @@
 /**
- * 排座日志模态框：列表（摘要索引）/ 详情懒加载 / 筛选 / 删除 / 导出
+ * Arrangement log modal: list (summary index) / lazy-loaded details / filters / delete / export
  */
 import { h, clearEl, appendKids, fmtTime, download } from '../dom.js';
 import { openModal, closeModal } from '../components/modal.js';

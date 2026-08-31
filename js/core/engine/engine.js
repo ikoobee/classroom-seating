@@ -1,5 +1,6 @@
 /**
- * 引擎编排：单方案生成 / 多候选方案生成 / 当前方案评分
+ * Engine orchestration: single solution generation / multiple candidate
+ * generation / scoring of an existing seating chart
  */
 import { buildContext } from './context.js';
 import { precheck } from './precheck.js';
@@ -17,7 +18,7 @@ function mapsToAssignment(ctx, bySeat) {
 }
 
 /**
- * 生成单个排座方案
+ * Generate a single seating arrangement
  * @returns {{
  *   ok: boolean, fatal?: string[], warnings?: string[],
  *   assignment?: object, score?: object, meta?: object
@@ -43,7 +44,7 @@ export function generateSolution(cfg, seed, budget) {
 }
 
 /**
- * 生成 N 个候选方案（不同随机种子），按总分降序
+ * Generate N candidate solutions (distinct random seeds), sorted by total score descending
  * @param onProgress (done, total) => void
  */
 export async function generateCandidates(cfg, N, seedBase, onProgress, budget) {
@@ -68,15 +69,15 @@ export async function generateCandidates(cfg, N, seedBase, onProgress, budget) {
       meta: { iterations: opt.iterations, elapsedMs: opt.elapsedMs },
     });
     onProgress?.(k + 1, count);
-    await nextTick(); // 让出主线程刷新进度
+    await nextTick(); // yield to the main thread so progress can render
   }
   candidates.sort((a, b) => b.score.total - a.score.total);
   return { ok: true, candidates, warnings: [...sharedWarnings] };
 }
 
 /**
- * 评分任意一个座位表（评分徽章 / 报告用）
- * @param assignment seatId -> studentId（完整表，含锁定）
+ * Score an arbitrary seating chart (for the score badge / report)
+ * @param assignment seatId -> studentId (the full chart, including locked seats)
  */
 export function scoreAssignment(cfg, assignment) {
   const ctx = buildContext(cfg);

@@ -1,7 +1,7 @@
 /**
- * Undo/Redo：命令模式
+ * Undo/Redo: command pattern
  * cmd = { label, apply(dispatch), revert(dispatch) }
- * 交换类命令自逆；整体替换类（排座/导入/清空）用快照式命令
+ * Swap-style commands are self-inverse; full-replacement commands (arrangement / import / clear) are snapshot-based
  */
 
 export function createHistory(store, { limit = 50, onChange } = {}) {
@@ -49,9 +49,9 @@ export function createHistory(store, { limit = 50, onChange } = {}) {
   return history;
 }
 
-/* ---------- 常用命令工厂（需要读取当前状态时由调用方传入 getter） ---------- */
+/* ---------- Common command factories (callers pass in a getter when current state is needed) ---------- */
 
-/** 单人入座/换座（快照式：被顶出的学生也能通过撤销恢复） */
+/** Seat/move a single student (snapshot-based: the displaced student is also restored on undo) */
 export function assignCmd(getState, studentId, seatId) {
   let prev = null;
   return {
@@ -66,7 +66,7 @@ export function assignCmd(getState, studentId, seatId) {
   };
 }
 
-/** 交换两座位（自逆） */
+/** Swap two seats (self-inverse) */
 export function swapCmd(seatA, seatB) {
   return {
     label: '交换座位',
@@ -75,7 +75,7 @@ export function swapCmd(seatA, seatB) {
   };
 }
 
-/** 整体替换座位表（排座应用/轮换/清空/撤销载体） */
+/** Replace the whole seating chart (arrangement apply / rotation / clear; also serves as the undo vehicle) */
 export function setAssignmentCmd(next, prev, label) {
   return {
     label: label || '更新座位表',
@@ -84,7 +84,7 @@ export function setAssignmentCmd(next, prev, label) {
   };
 }
 
-/** 锁定/解锁（自逆） */
+/** Lock/unlock a seat (self-inverse) */
 export function toggleLockCmd(seatId) {
   return {
     label: '锁定座位',
@@ -93,7 +93,7 @@ export function toggleLockCmd(seatId) {
   };
 }
 
-/** 学生集合 + 座位表整体替换（导入/演示数据/清空，快照式，可完整撤销） */
+/** Replace the student roster + seating chart together (import / demo data / clear; snapshot-based, fully undoable) */
 export function replaceAllCmd(next, prev, label) {
   // next/prev: { list, nextId, assignment }
   return {
@@ -109,7 +109,7 @@ export function replaceAllCmd(next, prev, label) {
   };
 }
 
-/** 单个学生增删改 */
+/** Single student add/delete/edit */
 export function addStudentCmd(student) {
   return {
     label: '添加学生',
@@ -134,7 +134,7 @@ export function updateStudentCmd(prev, next) {
   };
 }
 
-/** 关系替换（快照式） */
+/** Replace relations (snapshot-based) */
 export function setRelationsCmd(next, prev, label) {
   return {
     label: label || '更新关系约束',

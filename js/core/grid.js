@@ -1,10 +1,11 @@
 /**
- * 网格几何：座位 ID、有效座位、同桌边（过道隔离）、前后边、前排区
+ * Grid geometry: seat IDs, active seats, deskmate edges (split by aisles),
+ * front-back edges, front zone
  *
- * 布局模型：{ rows, seatCols, aisles, template }
- *   rows      排数 1-15
- *   seatCols  座位列数 1-20（过道不占列）
- *   aisles    过道位置：第 N 个座位列之后（N ∈ 1..seatCols-1）
+ * Layout model: { rows, seatCols, aisles, template }
+ *   rows      row count, 1-15
+ *   seatCols  seat column count, 1-20 (aisles occupy no column)
+ *   aisles    aisle positions: after the N-th seat column (N ∈ 1..seatCols-1)
  */
 import { TEMPLATES } from './constants.js';
 
@@ -21,9 +22,10 @@ const clampInt = (v, min, max, dft) => {
 };
 
 /**
- * 布局归一化。
- * 兼容旧 schema（cols 为含过道的网格总列数）：cols - 过道数 = 座位列数，
- * 网格过道列号 c → 其左侧座位列号（c - 1 - 前面过道数）。
+ * Layout normalization.
+ * Supports the legacy schema (cols is the total grid column count including
+ * aisles): cols - aisleCount = seat column count, and a grid aisle column c
+ * maps to the seat column on its left (c - 1 - aislesBefore).
  */
 export function normalizeLayout(layout = {}) {
   let seatCols;
@@ -32,7 +34,7 @@ export function normalizeLayout(layout = {}) {
   if (layout.seatCols != null) {
     seatCols = layout.seatCols;
   } else if (layout.cols != null) {
-    // 旧 schema：cols 含过道列
+    // Legacy schema: cols includes aisle columns
     const cols = clampInt(layout.cols, 1, 20, 8);
     const oldAisles = [...new Set((layout.aisles || [])
       .filter(c => Number.isInteger(c) && c >= 1 && c <= cols))].sort((a, b) => a - b);
@@ -55,7 +57,7 @@ export function normalizeLayout(layout = {}) {
   };
 }
 
-/** 全部有效座位（过道不占列，每列都有座位），按行优先、列升序 */
+/** All active seats (aisles occupy no column, every column has seats), row-major, column ascending */
 export function activeSeats(layout) {
   const seats = [];
   for (let r = 1; r <= layout.rows; r++) {
@@ -66,20 +68,20 @@ export function activeSeats(layout) {
   return seats;
 }
 
-/** c 与 c+1 列之间是否有过道 */
+/** Whether an aisle lies between columns c and c+1 */
 export function aisleBetween(layout, c) {
   return layout.aisles.includes(c);
 }
 
-/** 前排区行数：ratio ∈ [0.05, 0.9] */
+/** Front-zone row count: ratio ∈ [0.05, 0.9] */
 export function frontRowCount(layout, ratio) {
   const r = Math.min(0.9, Math.max(0.05, ratio || 0.3));
   return Math.max(1, Math.round(layout.rows * r));
 }
 
 /**
- * 同桌边：同行、列号相邻、且两列之间无过道
- * @param aisles 过道位置数组（第 N 列之后），如 [4] 表示第 4、5 列不成同桌
+ * Deskmate edges: same row, adjacent columns, and no aisle between the two columns
+ * @param aisles aisle position array (after column N); e.g. [4] means columns 4 and 5 cannot be deskmates
  * @returns [{a: seat, b: seat}]
  */
 export function deskEdges(seats, aisles = []) {
@@ -101,7 +103,7 @@ export function deskEdges(seats, aisles = []) {
   return edges;
 }
 
-/** 前后边：同列且行号相邻。@returns [{front: seat, back: seat}] */
+/** Front-back edges: same column and adjacent rows. @returns [{front: seat, back: seat}] */
 export function frontBackEdges(seats) {
   const byCol = new Map();
   for (const s of seats) {
@@ -118,7 +120,7 @@ export function frontBackEdges(seats) {
   return edges;
 }
 
-/** 应用模板 */
+/** Build a layout from a template */
 export function templateLayout(templateId) {
   const t = TEMPLATES.find(t => t.id === templateId);
   if (!t) return null;

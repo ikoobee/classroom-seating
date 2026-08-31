@@ -1,6 +1,9 @@
 /**
- * 邻域动作：swap（交换两座位）/ move（移到空位）/ pairSwap（两同桌对整体交换）/ pairMove（同桌对迁移到空同桌位）
- * 涉及好友对学生的单方 move 由生成阶段直接拒绝；合法性由 apply 后的 isMoveAcceptable 终审
+ * Neighborhood moves: swap (exchange two seats) / move (relocate to an empty
+ * seat) / pairSwap (swap two deskmate pairs wholesale) / pairMove (relocate a
+ * deskmate pair to an empty pair of desks)
+ * Unilateral moves involving friend-pair students are rejected outright at
+ * generation time; legality is finally vetted by isMoveAcceptable after apply
  */
 
 export function randomMove(ctx, bySeat, byStudent, rng) {
@@ -18,13 +21,13 @@ export function randomMove(ctx, bySeat, byStudent, rng) {
       return set;
     })());
 
-  // 25% 概率尝试同桌对整体移动（保持好友对完整）
+  // With 25% probability, try moving a deskmate pair as a whole (keeps friend pairs intact)
   if (rng() < 0.25) {
     const pairMove = tryPairMove(ctx, bySeat, rng);
     if (pairMove) return pairMove;
   }
 
-  // 个体 move / swap
+  // Individual move / swap
   const s1 = seats[Math.floor(rng() * n)];
   const s2 = seats[Math.floor(rng() * n)];
   if (s1.id === s2.id) return null;
@@ -53,7 +56,7 @@ function tryPairMove(ctx, bySeat, rng) {
   const oa = bySeat.get(pick.a.id), ob = bySeat.get(pick.b.id);
   if (oa === undefined || ob === undefined) return null;
 
-  // 找另一条同桌边：必须与 pick 完全不相交（相邻边共享座位会导致 pairSwap 覆盖写、学生丢失）
+  // Pick another deskmate edge: it must be fully disjoint from pick (adjacent edges share a seat, which would make pairSwap overwrite entries and lose students)
   const other = edges[Math.floor(rng() * edges.length)];
   if (other === pick) return null;
   const shareSeat =
@@ -63,7 +66,7 @@ function tryPairMove(ctx, bySeat, rng) {
 
   const ta = bySeat.get(other.a.id), tb = bySeat.get(other.b.id);
   if (ta !== undefined && tb !== undefined) {
-    // 同桌对整体交换（好友对仍保持同桌）
+    // Swap two deskmate pairs wholesale (friend pairs stay deskmates)
     return { type: 'pairSwap', e1: [pick.a.id, pick.b.id], e2: [other.a.id, other.b.id] };
   }
   if (ta === undefined && tb === undefined) {
@@ -72,7 +75,7 @@ function tryPairMove(ctx, bySeat, rng) {
   return null;
 }
 
-/** 应用 move（原地修改 bySeat/byStudent） */
+/** Apply a move (mutates bySeat/byStudent in place) */
 export function applyMove(bySeat, byStudent, move) {
   switch (move.type) {
     case 'swap': {
@@ -110,12 +113,12 @@ export function applyMove(bySeat, byStudent, move) {
   }
 }
 
-/** 回滚 move */
+/** Revert a move */
 export function revertMove(bySeat, byStudent, move) {
   switch (move.type) {
     case 'swap':
     case 'pairSwap':
-      applyMove(bySeat, byStudent, move); // 自逆
+      applyMove(bySeat, byStudent, move); // self-inverse
       return;
     case 'move':
       applyMove(bySeat, byStudent, { type: 'move', from: move.to, to: move.from });
@@ -126,7 +129,7 @@ export function revertMove(bySeat, byStudent, move) {
   }
 }
 
-/** move 影响的学生（用于合法性快速检查） */
+/** Students affected by a move (for the fast legality check) */
 export function affectedStudents(bySeat, move) {
   switch (move.type) {
     case 'swap':

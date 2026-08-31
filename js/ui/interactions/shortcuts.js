@@ -1,5 +1,5 @@
 /**
- * 全局快捷键：Ctrl+S 保存 / Ctrl+Z 撤销 / Ctrl+Y（Ctrl+Shift+Z）重做 / Esc 关闭
+ * Global shortcuts: Ctrl+S save / Ctrl+Z undo / Ctrl+Y (Ctrl+Shift+Z) redo / Esc close
  */
 import { handleModalEscape } from '../components/modal.js';
 
@@ -7,7 +7,7 @@ export function setupShortcuts(app) {
   document.addEventListener('keydown', e => {
     const mod = e.ctrlKey || e.metaKey;
     const key = e.key.toLowerCase();
-    // 输入框内不拦截 Ctrl+Z/Y（保留文本编辑的原生撤销）
+    // Don't intercept Ctrl+Z/Y inside editable fields (keep native text-edit undo)
     const inEditable = /^(input|textarea|select)$/i.test(e.target?.tagName ?? '')
       || e.target?.isContentEditable;
 

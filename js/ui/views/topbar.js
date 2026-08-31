@@ -1,5 +1,5 @@
 /**
- * 顶栏：排座入口 / 方案 / 轮换 / 撤销重做 / 锁定模式 / 评分徽章 / 各功能弹窗入口
+ * Topbar: arrange entry / candidates / rotation / undo & redo / lock mode / score badge / entries to feature modals
  */
 import { h, popupMenu, fmtTime } from '../dom.js';
 import { ROTATION_MODES } from '../../core/rotation.js';
@@ -98,7 +98,7 @@ export function createTopbar(app) {
     }, '💾'),
   );
 
-  /* ---------- 状态联动 ---------- */
+  /* ---------- State sync ---------- */
 
   function renderHistoryBtns() {
     undoBtn.disabled = !history.canUndo();
@@ -128,7 +128,7 @@ export function createTopbar(app) {
   return { renderScore };
 }
 
-/* ---------- 轮换历史 ---------- */
+/* ---------- Rotation history ---------- */
 
 function openRotationHistory(app) {
   const { store } = app;

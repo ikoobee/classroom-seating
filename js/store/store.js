@@ -1,6 +1,6 @@
 /**
- * 迷你 store：单一状态树 + 切片级订阅
- * reducer 返回 { state, changed: string[] }，仅通知受影响切片的订阅者
+ * Mini store: single state tree + slice-level subscriptions
+ * The reducer returns { state, changed: string[] }; only subscribers of affected slices are notified
  */
 
 export function createStore(reducer, initialState) {
@@ -22,7 +22,7 @@ export function createStore(reducer, initialState) {
       if (any) for (const fn of any) fn(state, action);
     },
 
-    /** 订阅切片变化，返回取消函数 */
+    /** Subscribe to slice changes; returns an unsubscribe function */
     subscribe(sliceKey, fn) {
       if (!listeners.has(sliceKey)) listeners.set(sliceKey, new Set());
       listeners.get(sliceKey).add(fn);

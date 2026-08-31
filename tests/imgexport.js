@@ -1,5 +1,6 @@
 /**
- * 图片导出验证：生成数据 → 排座 → renderSeatingChart → 画布挂载到页面供截图目视
+ * Image export verification: generate data -> arrange -> renderSeatingChart ->
+ * mount the canvas on the page for visual screenshot inspection
  */
 import { App } from '../js/app.js';
 import { generateDemoStudents } from '../js/core/datagen.js';
@@ -21,7 +22,7 @@ async function main() {
       { list: st.students.list, nextId: st.students.nextId, assignment: st.assignment }, '测试数据'));
     arranger.arrangeOnce();
     await new Promise(r => setTimeout(r, 600));
-    // 锁一个座位（验证锁定样式）+ 好友（验证标注多样性已有）
+    // lock one seat (verifies lock styling); annotation diversity is already covered by the demo data
     app.history.exec(toggleLockCmd('2-3'));
     say(`IMGTEST 排座完成 score=${store.getState().ui.lastScore?.total}`);
 
@@ -31,10 +32,10 @@ async function main() {
     const url = canvas.toDataURL('image/png');
     say(`IMGTEST toDataURL 长度=${url.length}（>50000 为正常）`);
 
-    // exportSeatImage 含浏览器下载行为，无头环境会阻塞——仅验证其渲染部分已由上方覆盖
+    // exportSeatImage triggers a browser download which blocks in headless mode — its rendering path is already covered above
     say('IMGTEST exportSeatImage 渲染路径已覆盖（下载行为跳过）');
 
-    // 挂载成品图供截图目视
+    // mount the rendered image for visual screenshot inspection
     canvas.style.width = '100%';
     canvas.style.height = 'auto';
     document.getElementById('imgShow').append(canvas);

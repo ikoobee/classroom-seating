@@ -1,7 +1,9 @@
 /**
- * 座位轮换：只移动位置、不重新分配。
- * 原理：在「非锁定座位集合」上按组（行/列/蛇形全局）构造循环置换，
- * 每个学生移向序列中的下一个座位，队尾绕回队首；锁定座位不参与（不迁出、不被迁入），因此无碰撞。
+ * Seat rotation: moves students between seats without reassigning.
+ * Approach: build a cyclic permutation over the set of unlocked seats, grouped
+ * by row / column / global snake order. Every student moves to the next seat
+ * in the sequence, with the tail wrapping around to the head. Locked seats
+ * take no part (nothing moves out of or into them), so there are no collisions.
  */
 
 export const ROTATION_MODES = [
@@ -13,16 +15,16 @@ export const ROTATION_MODES = [
 ];
 
 /**
- * 构造轮换映射 fromSeatId -> toSeatId（学生从 from 座位迁到 to 座位）
- * @param activeSeatList 全部有效座位（含锁定，函数内剔除）
+ * Build the rotation map fromSeatId -> toSeatId (each student moves from seat "from" to seat "to")
+ * @param activeSeatList all active seats (locked seats are filtered out inside)
  * @param locks Set<seatId>
- * @returns {Map<string, string>} 非锁定座位上的双射
+ * @returns {Map<string, string>} a bijection over the unlocked seats
  */
 export function buildRotationMap(activeSeatList, locks, mode) {
   const movable = activeSeatList.filter(s => !locks.has(s.id));
   if (movable.length < 2) return new Map();
 
-  /** 组内循环：seq 为同组座位数组，学生从 seq[i] 迁到 seq[(i+1)%n] */
+  /** Cycle within one group: seq is the group's seat array; each student moves from seq[i] to seq[(i+1)%n] */
   const cycle = (seq) => {
     const m = new Map();
     for (let i = 0; i < seq.length; i++) m.set(seq[i].id, seq[(i + 1) % seq.length].id);
@@ -38,20 +40,20 @@ export function buildRotationMap(activeSeatList, locks, mode) {
     const map = new Map();
     for (let g of groups.values()) {
       g.sort((a, b) => a.col - b.col || a.row - b.row);
-      if (reverse) g.reverse(); // 反转循环序列 = 反向移动
+      if (reverse) g.reverse(); // reversing the cycle sequence = moving the other way
       for (const [k, v] of cycle(g)) map.set(k, v);
     }
     return map;
   };
 
   switch (mode) {
-    case 'shiftRight':  // 行内 col 升序环 → 每人右移一格
+    case 'shiftRight':  // col-ascending cycle within each row → everyone shifts one seat right
       return cycleByGroups(s => `r${s.row}`, false);
-    case 'shiftLeft':   // 行内 col 降序环 → 每人左移一格
+    case 'shiftLeft':   // col-descending cycle within each row → everyone shifts one seat left
       return cycleByGroups(s => `r${s.row}`, true);
-    case 'rowBackward': // 列内 row 升序环 → 每人后移一排
+    case 'rowBackward': // row-ascending cycle within each column → everyone moves one row back
       return cycleByGroups(s => `c${s.col}`, false);
-    case 'rowForward':  // 列内 row 降序环 → 每人前移一排
+    case 'rowForward':  // row-descending cycle within each column → everyone moves one row forward
       return cycleByGroups(s => `c${s.col}`, true);
     case 'snake': {
       const byRow = new Map();
@@ -73,13 +75,13 @@ export function buildRotationMap(activeSeatList, locks, mode) {
 }
 
 /**
- * 应用轮换：返回新的 assignment（seatId -> studentId）
+ * Apply the rotation: returns the new assignment (seatId -> studentId)
  */
 export function applyRotation(activeSeatList, locks, assignment, mode) {
   const map = buildRotationMap(activeSeatList, locks, mode);
   const next = { ...assignment };
-  for (const from of map.keys()) delete next[from];         // 清空迁移源
-  for (const [from, to] of map) {                           // 学生落到目标座位
+  for (const from of map.keys()) delete next[from];         // clear the source seats
+  for (const [from, to] of map) {                           // drop students onto their target seats
     const sid = assignment[from];
     if (sid !== undefined) next[to] = sid;
   }

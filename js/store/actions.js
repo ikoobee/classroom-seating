@@ -1,23 +1,23 @@
 /**
- * Action 类型与 creator（纯对象）
+ * Action types and creators (plain objects)
  */
 
 export const A = {
-  HYDRATE: 'HYDRATE',                       // 整体替换（迁移/恢复备份）
-  SET_STUDENTS: 'SET_STUDENTS',             // {list, nextId}（导入/演示数据/清空）
+  HYDRATE: 'HYDRATE',                       // full state replacement (migration / backup restore)
+  SET_STUDENTS: 'SET_STUDENTS',             // {list, nextId} (import / demo data / clear)
   ADD_STUDENT: 'ADD_STUDENT',               // {student}
   UPDATE_STUDENT: 'UPDATE_STUDENT',         // {student}
   DELETE_STUDENT: 'DELETE_STUDENT',         // {id}
   SET_LAYOUT: 'SET_LAYOUT',                 // {layout}
-  SET_ASSIGNMENT: 'SET_ASSIGNMENT',         // {assignment}（整体替换）
-  ASSIGN: 'ASSIGN',                         // {studentId, seatId}（单人入座/换座）
+  SET_ASSIGNMENT: 'SET_ASSIGNMENT',         // {assignment} (full replacement)
+  ASSIGN: 'ASSIGN',                         // {studentId, seatId} (seat/move a single student)
   UNASSIGN: 'UNASSIGN',                     // {seatId}
   SWAP_SEATS: 'SWAP_SEATS',                 // {seatA, seatB}
   CLEAR_SEATS: 'CLEAR_SEATS',
   TOGGLE_LOCK: 'TOGGLE_LOCK',               // {seatId}
   SET_LOCKS: 'SET_LOCKS',                   // {ids}
   SET_RELATIONS: 'SET_RELATIONS',           // {relations}
-  SET_RULES: 'SET_RULES',                   // {rules}（迁移）
+  SET_RULES: 'SET_RULES',                   // {rules} (migration)
   SET_RULE_WEIGHT: 'SET_RULE_WEIGHT',       // {id, weight}
   REORDER_RULES: 'REORDER_RULES',           // {order}
   SET_FRONT_RATIO: 'SET_FRONT_RATIO',       // {value}

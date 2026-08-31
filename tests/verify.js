@@ -1,9 +1,9 @@
 /**
- * 计算式验证（替代截图目测）：
- *   #vlegend  图例弹窗：芯片尺寸 + 标题/说明字体层级
- *   #vdash    仪表盘：条形图颜色 vs 热力图边框颜色逐维度一致性
- *   #vrel     关系弹窗：下拉+按钮同行；面板向下弹出
- *   #vchart   导出图：座位号首个深色像素距座位顶部的距离（呼吸空间）
+ * Computed verification (replaces eyeballing screenshots):
+ *   #vlegend  legend modal: chip size + title/description font hierarchy
+ *   #vdash    dashboard: bar chart colors vs heatmap border colors, per dimension
+ *   #vrel     relations modal: dropdown + button on one line; panel opens downward
+ *   #vchart   exported chart: distance from the seat card top to the first dark pixel of the seat number (breathing room)
  */
 import { App } from '../js/app.js';
 import { generateDemoStudents } from '../js/core/datagen.js';
@@ -34,10 +34,12 @@ async function main() {
     const canvas = renderSeatingChart(store.getState());
     const ctx = canvas.getContext('2d');
     const img = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-    // 找第一个有学生名的座位卡：扫描全图最左上角非白非灰的实心卡区域起点不可靠，
-    // 改用画布左侧讲台下方第一排座位近似：直接扫描 y∈[0, canvas.height) 中
-    // x∈[左侧起始, +60] 内第一处「深色文字像素」（alpha>0 且 RGB 均 < 120）
-    // 由于标题是深色大字，先跳过标题区（y > 150 之后开始）
+    // Find the first seat card with a student name: scanning the whole image for the
+    // top-left solid non-white/non-gray card region is unreliable, so approximate
+    // with the leftmost first-row seats below the podium: scan y in [0, canvas.height)
+    // for the first "dark text pixel" (alpha>0 and all RGB < 120) within
+    // x in [left start, +60]
+    // The title is large dark text, so skip the title area (start at y > 150)
     const isDark = (x, y) => {
       const i = (y * canvas.width + x) * 4;
       return img[i + 3] > 40 && img[i] < 120 && img[i + 1] < 120 && img[i + 2] < 120;
@@ -48,11 +50,11 @@ async function main() {
         if (isDark(x, y)) { firstDarkY = y; firstDarkX = x; break outer; }
       }
     }
-    // 该深色像素即第一个座位号（每卡左上角第一个深色元素）
-    // 找该座位卡的上边框（向上找第一行连续浅色边框/背景差异）——直接输出 y 与标题后内容起点差值即可
+    // this dark pixel is the first seat number (the first dark element at each card's top-left)
+    // find the card's top border (scan up for the first row of light border/background difference) — just report y relative to the content start below the title
     log(`画布 ${canvas.width}x${canvas.height}`);
     log(`首个座位号深色像素 at (${firstDarkX}, ${firstDarkY})`);
-    // 座位卡上边缘：从 (firstDarkX, firstDarkY) 向上找边框色（深色描边）或卡片背景（非纯白）
+    // seat card top edge: from (firstDarkX, firstDarkY) scan up for the border color (dark stroke) or card background (non-pure-white)
     let cardTop = firstDarkY;
     for (let y = firstDarkY; y > 150; y--) {
       const i = (y * canvas.width + firstDarkX) * 4;
@@ -83,7 +85,7 @@ async function main() {
     const modal = openDashboardModal(app);
     await new Promise(r => setTimeout(r, 200));
 
-    // 1) 每个条形图卡：标题 + (标签→填充色)
+    // 1) each bar chart card: title + (label -> fill color)
     const cards = [...modal.el.querySelectorAll('.chart-card')];
     const chartMap = new Map(); // label -> hex
     for (const c of cards) {
@@ -98,7 +100,7 @@ async function main() {
     log('条形图颜色：');
     for (const [k, v] of chartMap) log(`  ${k}: ${v}`);
 
-    // 2) 逐个热力维度，取第一排学生单元格边框色，与条形图对照
+    // 2) per heatmap dimension, take first-row student cell border colors and compare against the bar charts
     const tabs = [...modal.el.querySelectorAll('.filter-tab')];
     for (const t of tabs) {
       t.click();
@@ -112,7 +114,7 @@ async function main() {
   }
 
   if (mode === 'vlock') {
-    // 所有卡片：图标 ≤3、单行（无换行）、与姓名矩形不相交；锁定座位 ::after 显示 🔒
+    // all cards: at most 3 icons, single line (no wrapping), no overlap with the name rect; locked seats show a lock via ::after
     let maxIcons = 0, wrapped = 0, overlapped = 0;
     for (const card of document.querySelectorAll('.student-card')) {
       const meta = card.querySelector('.sc-meta');

@@ -1,5 +1,5 @@
 /**
- * 排座编排：连接引擎与 UI（单方案排座 / 多候选方案 / 轮换 / 评分徽章维护）
+ * Arrangement orchestration: bridges the engine and the UI (single-solution arrangement / candidate solutions / rotation / score badge upkeep)
  */
 import { generateSolution, generateCandidates, scoreAssignment } from '../core/engine/engine.js';
 import { activeSeats } from '../core/grid.js';
@@ -14,7 +14,7 @@ import { openCandidatesModal } from '../ui/views/candidatesModal.js';
 
 export function createArranger(app) {
   const { store, history, logger } = app;
-  let prevBaseline = null; // 上一次座位表（randomShuffle 打散维度的比较基准）
+  let prevBaseline = null; // previous seating chart (comparison baseline for the randomShuffle scatter dimension)
 
   const stateToCfg = prev => {
     const s = store.getState();
@@ -29,7 +29,7 @@ export function createArranger(app) {
     };
   };
 
-  /* ---------- 评分徽章 ---------- */
+  /* ---------- Score badge ---------- */
 
   function refreshScore() {
     const s = store.getState();
@@ -41,7 +41,7 @@ export function createArranger(app) {
     store.dispatch({ type: 'PATCH_UI', patch: { lastScore: score } });
   }
 
-  /* ---------- 单方案智能排座 ---------- */
+  /* ---------- Single-solution smart arrangement ---------- */
 
   function arrangeOnce() {
     const state = store.getState();
@@ -92,7 +92,7 @@ export function createArranger(app) {
     if (hard || warn) openReportModal(app, result.score, result.warnings);
   }
 
-  /* ---------- 多候选方案 ---------- */
+  /* ---------- Candidate solutions ---------- */
 
   async function arrangeCandidates(N = 5) {
     const state = store.getState();
@@ -131,7 +131,7 @@ export function createArranger(app) {
     });
   }
 
-  /* ---------- 轮换 ---------- */
+  /* ---------- Rotation ---------- */
 
   function rotate(modeId) {
     const state = store.getState();
@@ -153,7 +153,7 @@ export function createArranger(app) {
     toast.success(`${mode.name}完成（${moved} 个座位迁移），当前 ${score.total} 分`);
   }
 
-  /** 清空座位表时同步清空打散基准 */
+  /** Clear the scatter baseline whenever the seating chart is cleared */
   function resetBaseline() { prevBaseline = null; }
 
   return { arrangeOnce, arrangeCandidates, rotate, refreshScore, resetBaseline };

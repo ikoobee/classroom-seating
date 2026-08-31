@@ -1,4 +1,4 @@
-/* ============ 顶栏 ============ */
+/* ============ Top bar ============ */
 .topbar {
   display: flex;
   align-items: center;
@@ -55,7 +55,7 @@
 .tb-sep { width: 1px; height: 22px; background: var(--border); margin: 0 6px; }
 .tb-spacer { flex: 1; }
 
-/* 评分徽章 */
+/* score badge */
 .score-badge {
   display: inline-flex;
   align-items: center;
@@ -74,7 +74,7 @@
 .score-lv-mid   .sb-num { color: var(--warning); }
 .score-lv-bad   .sb-num { color: var(--danger); }
 
-/* 下拉菜单 */
+/* dropdown menu */
 .dropdown { position: relative; }
 .menu {
   position: absolute;
@@ -103,7 +103,7 @@
 .menu-item .mi-ico { width: 18px; text-align: center; }
 .menu-title { font-size: 11px; color: var(--text-3); padding: 6px 11px 4px; }
 
-/* ============ 模态框 ============ */
+/* ============ Modal ============ */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -150,7 +150,7 @@
   flex-shrink: 0;
 }
 
-/* ============ 表单 ============ */
+/* ============ Forms ============ */
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 18px; }
 .form-item { display: flex; flex-direction: column; gap: 6px; }
 .form-item.full { grid-column: 1 / -1; }
@@ -240,7 +240,7 @@
   white-space: pre-line;
 }
 
-/* ============ 列表通用 ============ */
+/* ============ Generic lists ============ */
 .list-row {
   display: flex;
   align-items: center;
@@ -269,7 +269,7 @@
 .type-import { background: #ede9fe; color: #7c3aed; }
 body.dark-theme .type-import { background: #2e1065; color: #c4b5fd; }
 
-/* ============ 图表 ============ */
+/* ============ Charts ============ */
 .chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
 .chart-card {
   border: 1px solid var(--border);
@@ -325,7 +325,7 @@ details.fold { margin-top: 10px; border: 1px solid var(--border); border-radius:
 details.fold summary { cursor: pointer; font-size: 12.5px; color: var(--text-2); user-select: none; }
 details.fold[open] summary { margin-bottom: 8px; }
 
-/* 迷你教室预览 */
+/* mini classroom preview */
 .mini-grid { display: grid; gap: 3px; margin-top: 10px; }
 .mini-seat {
   border-radius: 4px;
@@ -341,7 +341,7 @@ details.fold[open] summary { margin-bottom: 8px; }
 .mini-seat.ms-m { background: var(--male-soft); border-color: var(--male); }
 .mini-seat.ms-f { background: var(--female-soft); border-color: var(--female); }
 
-/* 表格 */
+/* tables */
 .data-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
 .data-table th, .data-table td { padding: 9px 10px; text-align: left; border-bottom: 1px solid var(--border); }
 .data-table th { color: var(--text-3); font-weight: 600; font-size: 12px; white-space: nowrap; }
@@ -349,10 +349,10 @@ details.fold[open] summary { margin-bottom: 8px; }
 .data-table tr.clickable:hover td { background: var(--bg-hover); }
 .data-table tr.row-active td { background: var(--primary-soft); }
 
-/* 热力图 */
+/* heatmap */
 .heat-cell { transition: fill .3s; }
 
-/* 关系对 */
+/* relation pairs */
 .pair-card {
   display: flex;
   align-items: center;
@@ -376,7 +376,7 @@ details.fold[open] summary { margin-bottom: 8px; }
   margin-bottom: -1px;
 }
 
-/* ============ 设置卡片 ============ */
+/* ============ Settings cards ============ */
 .setting-card {
   border: 1px solid var(--border);
   border-radius: 10px;

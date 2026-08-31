@@ -1,5 +1,5 @@
 /**
- * 随机演示数据生成器：随机中文姓名 + 合理属性分布
+ * Random demo data generator: random Chinese names + plausible attribute distributions
  */
 import { createStudent } from './models.js';
 import { mulberry32, shuffle } from './rng.js';
@@ -48,7 +48,7 @@ function genNames(n, rng) {
 }
 
 /**
- * 生成 n 名随机学生
+ * Generate n random students
  * @returns {students: [], nextId: number}
  */
 export function generateDemoStudents(n, seed = Date.now() % 100000) {
@@ -72,9 +72,9 @@ export function generateDemoStudents(n, seed = Date.now() % 100000) {
       ['音乐', 7], ['美术', 6], ['书法', 5], ['演讲', 6], ['朗诵', 4], ['舞蹈', 5], ['棋类', 4],
       ['英语口语', 4], ['科学实验', 4], ['信息技术', 4], ['劳动实践', 5],
     ]);
-    // 约 18% 学生带一个职务（职务不重复）
+    // ~18% of students hold one class duty (duties do not repeat)
     const tags = (rng() < 0.18 && dutyIdx < dutyPool.length) ? [dutyPool[dutyIdx++]] : [];
-    // 标注：10% 重点关注 / 8% 需要注意 / 8% 表现良好 / 4% 特殊
+    // Annotation: 10% red / 8% orange / 8% green / 4% purple
     const annoRoll = rng();
     const annotationColor = annoRoll < 0.10 ? 'red'
       : annoRoll < 0.18 ? 'orange'

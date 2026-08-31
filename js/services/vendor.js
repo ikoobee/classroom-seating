@@ -1,5 +1,5 @@
 /**
- * 动态加载 UMD 依赖（本地 vendor 优先，失败回退 CDN）
+ * Lazy-load UMD dependencies (local vendor first, CDN fallback on failure)
  */
 
 const cache = {};

@@ -1,14 +1,14 @@
 /**
- * 10 条软规则 → 10 个评分维度
- * 统一签名：(ctx, bySeat, byStudent) => { score: 0..1, violations: [], details: string }
- * 1 为最优；总分 = 各维度按权重加权平均 × 100
+ * 10 soft rules → 10 scoring dimensions
+ * Uniform signature: (ctx, bySeat, byStudent) => { score: 0..1, violations: [], details: string }
+ * 1 is optimal; total = weight-weighted average of dimensions × 100
  */
 import { HEIGHT_ORDER, PERSONALITY_HARMONY } from '../constants.js';
 
 const clamp01 = v => Math.max(0, Math.min(1, v));
 const cap = (arr, n = 30) => arr.length > n ? arr.slice(0, n) : arr;
 
-/** 视力保护：近视学生坐在前排区的比例 */
+/** Vision protection: share of nearsighted students seated in the front zone */
 function visionProtection(ctx, bySeat, byStudent) {
   const front = ctx.frontRow;
   let ok = 0;
@@ -27,7 +27,7 @@ function visionProtection(ctx, bySeat, byStudent) {
   };
 }
 
-/** 身高优化：前后边「高在前矮在后」逆序对比例 */
+/** Height optimization: share of front-back edges that invert "tall in front, short behind" */
 function heightOptimized(ctx, bySeat) {
   let bad = 0, total = 0;
   const violations = [];
@@ -50,7 +50,7 @@ function heightOptimized(ctx, bySeat) {
   };
 }
 
-/** 成绩分层：同桌 + 前后边「成绩相同」对越少越好 */
+/** Academic balance: fewer deskmate/front-back pairs with identical academic levels is better */
 function academicBalance(ctx, bySeat) {
   let same = 0, total = 0;
   const violations = [];
@@ -75,7 +75,7 @@ function academicBalance(ctx, bySeat) {
   };
 }
 
-/** 行为管理：调皮学生前排比例 + 调皮扎堆惩罚 */
+/** Behavior management: front-row share of naughty students + penalty for naughty clustering */
 function behaviorManagement(ctx, bySeat, byStudent) {
   const naughty = ctx.naughty;
   if (!naughty.length) return { score: 1, violations: [], details: '无调皮学生' };
@@ -88,7 +88,7 @@ function behaviorManagement(ctx, bySeat, byStudent) {
     if ((ctx.seatById.get(seat)?.row ?? 99) <= front) frontOk++;
   }
 
-  // 调皮-调皮邻接（同桌或前后）
+  // Naughty-naughty adjacency (deskmates or front-back)
   let adjacent = 0;
   const violations = [];
   const countAdj = (sa, sb) => {
@@ -104,7 +104,7 @@ function behaviorManagement(ctx, bySeat, byStudent) {
   for (const e of ctx.frontBackEdges) countAdj(e.front, e.back);
 
   const frontPart = frontOk / naughty.length;
-  // 全部配对扎堆时 adjacent ≈ ceil(n/2)，归一化到 0
+  // If everyone pairs up, adjacent ≈ ceil(n/2); normalize that worst case to 0
   const adjacencyPart = clamp01(1 - adjacent / Math.max(1, Math.ceil(naughty.length / 2)));
   return {
     score: 0.5 * frontPart + 0.5 * adjacencyPart,
@@ -113,7 +113,7 @@ function behaviorManagement(ctx, bySeat, byStudent) {
   };
 }
 
-/** 性别平衡：同桌边异性比例趋近 0.5 */
+/** Gender balance: mixed-gender ratio on deskmate edges approaching 0.5 */
 function genderBalance(ctx, bySeat) {
   let hetero = 0, total = 0;
   for (const e of ctx.deskEdges) {
@@ -131,7 +131,7 @@ function genderBalance(ctx, bySeat) {
   };
 }
 
-/** 能力互补：同桌边特长不同的比例（双方未填不计入） */
+/** Ability pairing: share of deskmate edges with different talents (pairs with either side blank are skipped) */
 function abilityPairing(ctx, bySeat) {
   let diff = 0, total = 0;
   const violations = [];
@@ -151,7 +151,7 @@ function abilityPairing(ctx, bySeat) {
   };
 }
 
-/** 避免同职务：同桌 tags 无交集 */
+/** Avoid same duty: deskmates' tags must not overlap */
 function avoidSameTag(ctx, bySeat) {
   let conflict = 0, total = 0;
   const violations = [];
@@ -173,7 +173,7 @@ function avoidSameTag(ctx, bySeat) {
   };
 }
 
-/** 性格平衡：互补矩阵在同桌边上的均值得分 */
+/** Personality balance: mean harmony-matrix score across deskmate edges */
 function personalityBalance(ctx, bySeat) {
   let sum = 0, total = 0;
   const violations = [];
@@ -193,7 +193,7 @@ function personalityBalance(ctx, bySeat) {
   };
 }
 
-/** 随机打散：与上一次座位表差异最大化 */
+/** Random shuffle: maximize the diff against the previous seating chart */
 function randomShuffle(ctx, bySeat, byStudent) {
   if (!ctx.prevAssignment) {
     return { score: 0.8, violations: [], details: '首次排座，无历史可比' };
@@ -213,7 +213,7 @@ function randomShuffle(ctx, bySeat, byStudent) {
   };
 }
 
-/** 前排优先：学生平均行靠前 + 空座位集中后排 */
+/** Front first: students sit as far forward as possible + empty seats cluster at the back */
 function frontFirst(ctx, bySeat) {
   const seatedRows = [], emptyRows = [];
   for (const seat of ctx.seats) {

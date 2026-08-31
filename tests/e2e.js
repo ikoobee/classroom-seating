@@ -1,6 +1,7 @@
 /**
- * E2E 冒烟测试：真实浏览器环境中驱动 App 全流程
- * 结果以 E2E-PASS / E2E-FAIL 文本行写入 #e2eResult，供无头浏览器 dump-dom 校验
+ * E2E smoke test: drives the App through the full flow in a real browser
+ * Results are written to #e2eResult as E2E-PASS / E2E-FAIL text lines,
+ * verified headlessly via dump-dom
  */
 import { App } from '../js/app.js';
 import { generateDemoStudents } from '../js/core/datagen.js';
@@ -28,7 +29,7 @@ async function main() {
 
   const { store, history, arranger } = app;
 
-  // 1. 生成演示学生（与学生面板按钮同一代码路径）
+  // 1. Generate demo students (same code path as the students panel button)
   try {
     const { students, nextId } = generateDemoStudents(45, 2026);
     const st = store.getState();
@@ -40,17 +41,17 @@ async function main() {
     else throw new Error(`学生数 ${store.getState().students.list.length}`);
   } catch (e) { fail('生成 45 名演示学生', e); }
 
-  // 2. 学生面板渲染
+  // 2. Students panel rendering
   try {
     const items = document.querySelectorAll('#studentsPanel .student-item');
     if (items.length === 45) pass('学生面板渲染 45 张卡片');
     else throw new Error(`卡片数 ${items.length}`);
   } catch (e) { fail('学生面板渲染', e); }
 
-  // 3. 智能排座（真实引擎 + FLIP DOM 更新）
+  // 3. Smart seating (real engine + FLIP DOM updates)
   try {
     arranger.arrangeOnce();
-    await new Promise(r => setTimeout(r, 500)); // 等 FLIP 动画与 toast
+    await new Promise(r => setTimeout(r, 500)); // wait for the FLIP animation and toast
     const assignment = store.getState().assignment;
     if (Object.keys(assignment).length === 45) pass(`智能排座 45 人入座`);
     else throw new Error(`入座 ${Object.keys(assignment).length}`);
@@ -62,17 +63,17 @@ async function main() {
     else throw new Error('lastScore 缺失');
   } catch (e) { fail('智能排座流程', e); }
 
-  // 4. 日志记录
+  // 4. Activity log
   try {
     const logs = store.getState().logs;
     if (logs.length >= 1 && logs[0].type === 'seat') pass('排座日志已记录');
     else throw new Error(`日志 ${logs.length} 条`);
   } catch (e) { fail('排座日志', e); }
 
-  // 5. 锁定 + 轮换：锁定座位纹丝不动
+  // 5. Lock + rotation: locked seats stay untouched
   try {
     const st = store.getState();
-    // 找一个已入座未锁定座位
+    // pick a seated, unlocked seat
     const lockedSeat = Object.keys(st.assignment).find(s => !st.locks.includes(s));
     const lockedStudent = st.assignment[lockedSeat];
     history.exec(toggleLockCmd(lockedSeat));
@@ -83,11 +84,11 @@ async function main() {
     if (after[lockedSeat] === lockedStudent) pass(`锁定座位 ${lockedSeat} 轮换后保持不动`);
     else throw new Error(`${lockedSeat}: ${lockedStudent} → ${after[lockedSeat]}`);
     if (store.getState().logs.some(l => l.type === 'rotate')) pass('轮换日志已记录');
-    history.undo(); // 撤销轮换
-    history.undo(); // 撤销锁定
+    history.undo(); // undo the rotation
+    history.undo(); // undo the lock
   } catch (e) { fail('锁定与轮换', e); }
 
-  // 6. 关系约束：好友必须同桌
+  // 6. Relations: friends must share a desk
   try {
     const st = store.getState();
     const [a, b] = st.students.list;
@@ -104,7 +105,7 @@ async function main() {
     const byStudent = new Map(Object.entries(after.assignment).map(([s, id]) => [id, s]));
     const seatA = byStudent.get(a.id), seatB = byStudent.get(b.id);
     const layout = { ...after.layout };
-    // 直接用引擎几何判断
+    // check directly with engine geometry
     const { deskEdges } = await import('../js/core/grid.js');
     const edges = deskEdges(activeSeats(layout), layout.aisles);
     const ok = edges.some(e =>
@@ -113,7 +114,7 @@ async function main() {
     else throw new Error(`${seatA} vs ${seatB} 未同桌`);
   } catch (e) { fail('好友同桌约束', e); }
 
-  // 7. 多候选方案（异步 + 进度 + 模态框）
+  // 7. Multiple candidates (async + progress + modal)
   try {
     await arranger.arrangeCandidates(3);
     await new Promise(r => setTimeout(r, 300));
@@ -123,7 +124,7 @@ async function main() {
     document.querySelector('#modalHost .modal-close')?.click();
   } catch (e) { fail('多候选方案', e); }
 
-  // 8. 撤销 / 重做
+  // 8. Undo / redo
   try {
     const before = JSON.stringify(store.getState().assignment);
     arranger.rotate('shiftRight');
@@ -137,7 +138,7 @@ async function main() {
     history.redo();
   } catch (e) { fail('撤销重做', e); }
 
-  // 9. 持久化：数据已写入 localStorage
+  // 9. Persistence: data written to localStorage
   try {
     app.persistNow();
     const raw = localStorage.getItem('sm.students');
@@ -148,7 +149,7 @@ async function main() {
     if (logs && JSON.parse(logs).length >= 1) pass('localStorage 持久化日志索引');
   } catch (e) { fail('持久化', e); }
 
-  // 10. key 隔离：只读写 sm. 前缀，不触碰其他 keys
+  // 10. Key isolation: only sm.* keys are read/written; other keys untouched
   try {
     const others = Object.keys(localStorage).filter(k => !k.startsWith('sm.'));
     pass(`其他 keys 未被修改（共 ${others.length} 个非 sm key）`);

@@ -1,5 +1,6 @@
 /**
- * 关系约束：好友对（必须同桌）、黑名单对（禁止同桌 / 可选禁止前后相邻）
+ * Relation constraints: friend pairs (must sit as deskmates) and blacklist
+ * pairs (forbidden as deskmates / optionally forbidden front-back adjacent)
  */
 export function emptyRelations() {
   return { friends: [], blacklist: [] };
@@ -30,7 +31,7 @@ function pairKey(a, b) {
   return a < b ? `${a}-${b}` : `${b}-${a}`;
 }
 
-/** O(1) 关系索引 */
+/** O(1) relation lookup index */
 export function buildRelationIndex(relations) {
   const friendOf = new Map();   // studentId -> Set<partnerId>
   const blackOf = new Map();    // studentId -> [{partner, noFrontBack}]
@@ -52,7 +53,7 @@ function addMap(m, k, v) {
   m.get(k).add(v);
 }
 
-/** 剔除涉及不存在学生的关系 */
+/** Drop relations that reference non-existent students */
 export function pruneRelations(relations, existingIds) {
   const ok = id => existingIds.has(id);
   return normalizeRelations({

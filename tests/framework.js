@@ -1,9 +1,9 @@
 /**
- * 迷你测试框架（浏览器运行）
+ * Mini test framework (runs in the browser)
  */
 const results = [];
 let currentGroup = '';
-globalThis.__testResults = results; // 供 node 无头运行器读取
+globalThis.__testResults = results; // read by the Node headless runner
 
 export function describe(name) { currentGroup = name; }
 
@@ -36,14 +36,14 @@ export function assertNearly(actual, expected, eps = 1e-9, msg) {
   }
 }
 
-/** 把当前累计结果渲染到页面（幂等：重复调用以最终一次为准） */
+/** Render the accumulated results to the page (idempotent: last call wins) */
 export function renderResults() {
   const host = document.getElementById('results');
   if (!host) return;
   const pass = results.filter(r => r.ok).length;
   const fail = results.length - pass;
 
-  host.innerHTML = ''; // 幂等重绘
+  host.innerHTML = ''; // idempotent redraw
   const groups = [...new Set(results.map(r => r.group))];
   for (const g of groups) {
     const items = results.filter(r => r.group === g);

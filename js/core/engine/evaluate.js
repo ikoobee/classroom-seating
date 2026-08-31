@@ -1,5 +1,5 @@
 /**
- * 评分汇总：总分 + 各维度子分 + 硬冲突清单
+ * Score aggregation: total score + per-dimension sub-scores + hard violation list
  */
 import { SCORERS } from './scorers.js';
 import { checkHard } from './constraints.js';

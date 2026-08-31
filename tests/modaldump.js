@@ -1,5 +1,6 @@
 /**
- * 视觉验证：导出图（排列号位置）+ 可选打开指定弹窗（#legend / #dashboard / #relations）
+ * Visual verification: exported chart (seat number placement) +
+ * optionally open a given modal (#legend / #dashboard / #relations)
  */
 import { App } from '../js/app.js';
 import { generateDemoStudents } from '../js/core/datagen.js';

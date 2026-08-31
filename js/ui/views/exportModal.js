@@ -1,5 +1,5 @@
 /**
- * 导出模态框：Excel / JPG 图片 / JSON 备份
+ * Export modal: Excel / JPG image / JSON backup
  */
 import { h } from '../dom.js';
 import { openModal, closeModal } from '../components/modal.js';

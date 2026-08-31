@@ -1,12 +1,12 @@
 /**
- * 关系约束管理：好友（必须同桌）/ 黑名单（禁止同桌，可选禁止前后相邻）
- * 学生选择使用自定义下拉（固定向下弹出 + 搜索），替代原生 select 的方向不可控
+ * Relation constraint management: friends (must be deskmates) / blacklist (deskmates forbidden, optionally also front-back adjacency)
+ * Student selection uses a custom dropdown (fixed downward popup + search) because the native select's popup direction can't be controlled
  */
 import { h, clearEl } from '../dom.js';
 import { openModal, closeModal } from '../components/modal.js';
 import { setRelationsCmd } from '../../store/history.js';
 
-/** 学生选择器：按钮 + 向下弹出的搜索面板 */
+/** Student picker: button + downward-popping search panel */
 function createStudentPicker({ placeholder = '选择学生…', getStudents, getDisabled, onPick }) {
   let value = 0;
   let valueLabel = '';
@@ -39,7 +39,7 @@ function createStudentPicker({ placeholder = '选择学生…', getStudents, get
     panel = buildPanel();
     document.body.append(panel);
     document.addEventListener('mousedown', onDocDown, true);
-    // 定位：按钮正下方（固定向下弹出）
+    // Position: directly below the button (fixed downward popup)
     const r = btn.getBoundingClientRect();
     panel.style.left = Math.max(8, Math.min(r.left, window.innerWidth - panel.offsetWidth - 8)) + 'px';
     panel.style.top = (r.bottom + 6) + 'px';
@@ -150,8 +150,8 @@ export function openRelationsModal(app) {
     const byId = new Map(state.students.list.map(s => [s.id, s]));
     const isFriend = tab === 'friends';
 
-    /* ---- 添加区（卡片化，自定义下拉固定向下弹出） ---- */
-    // 好友模式下已配对学生禁选（一个座位只有一位同桌）
+    /* ---- Add section (card-based, custom dropdown popping downward) ---- */
+    // In friends mode, already-paired students are unselectable (one seat has only one deskmate)
     const takenSet = () => new Set(tab === 'friends'
       ? store.getState().relations.friends.flatMap(p => [p.a, p.b]) : []);
     const getStudents = () => store.getState().students.list;
@@ -168,7 +168,7 @@ export function openRelationsModal(app) {
     },
       h('div', { style: { fontSize: 12.5, fontWeight: 600, color: 'var(--text-2)', marginBottom: 10 } },
         isFriend ? '💖 添加好友对（两人必须同桌）' : '🚫 添加黑名单（两人禁止相邻）'),
-      // 下拉 + 添加按钮同一行
+      // Dropdowns + add button on a single row
       h('div', { style: { display: 'flex', gap: 10, alignItems: 'center' } },
         h('div', { style: { flex: 1, minWidth: 0 } }, pickerA.el),
         h('span', { style: { fontSize: 15, flexShrink: 0 } }, isFriend ? '💗' : '⚡'),
@@ -185,12 +185,12 @@ export function openRelationsModal(app) {
 
             if (isFriend) {
               if (pairExists(rel.friends, a, b)) { toast.info('该好友对已存在'); return; }
-              // 跨列表冲突：同一对学生不能既是好友又是黑名单
+              // Cross-list conflict: the same pair can't be both friends and blacklisted
               if (pairExists(rel.blacklist, a, b)) {
                 toast.warning('这两名学生已在黑名单中——好友（必须同桌）与黑名单（禁止相邻）互相矛盾，请先删除对应黑名单记录', 4600);
                 return;
               }
-              // 座位几何限制：一人只能与一位同桌
+              // Seat geometry limit: a student can have only one deskmate
               const busy = [a, b].filter(id => rel.friends.some(p => p.a === id || p.b === id));
               if (busy.length) {
                 const names = busy.map(id => store.getState().students.list.find(s => s.id === id)?.name ?? `#${id}`);
@@ -200,7 +200,7 @@ export function openRelationsModal(app) {
               rel.friends = [...rel.friends, { a, b }];
             } else {
               if (pairExists(rel.blacklist, a, b)) { toast.info('该黑名单对已存在'); return; }
-              // 跨列表冲突
+              // Cross-list conflict
               if (pairExists(rel.friends, a, b)) {
                 toast.warning('这两名学生已是好友（必须同桌）——与黑名单（禁止相邻）互相矛盾，请先删除对应好友记录', 4600);
                 return;
@@ -212,7 +212,7 @@ export function openRelationsModal(app) {
             render();
           },
         }, isFriend ? '添加好友' : '加入黑名单')),
-      // 黑名单：附加选项（紧凑行，右对齐）
+      // Blacklist: extra option (compact row, right-aligned)
       isFriend ? null : h('label', {
         style: {
           display: 'flex', gap: 7, alignItems: 'center', justifyContent: 'flex-end',
@@ -223,7 +223,7 @@ export function openRelationsModal(app) {
 
     listBox.append(addCard);
 
-    /* ---- 关系列表 ---- */
+    /* ---- Relations list ---- */
     const list = isFriend ? state.relations.friends : state.relations.blacklist;
     if (!list.length) {
       listBox.append(h('div', { class: 'empty-tip' },
@@ -235,7 +235,7 @@ export function openRelationsModal(app) {
     }
   }
 
-  /** 单条关系卡片：性别胶囊姓名对 + 说明 + 删除 */
+  /** Single relation card: gender-pill name pair + description + delete */
   function pairCard(p, byId, state) {
     const isFriend = tab === 'friends';
     const sa = byId.get(p.a), sb = byId.get(p.b);

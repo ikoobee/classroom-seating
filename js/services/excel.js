@@ -1,13 +1,13 @@
 /**
- * Excel 导入导出：中英文表头识别 + 列映射预览 + 双 sheet 导出 + 模板下载
- * 9 个字段全部映射导入
+ * Excel import/export: Chinese/English header detection + column mapping preview + two-sheet export + template download
+ * All 9 fields are mapped on import
  */
 import { loadXlsx } from './vendor.js';
 import { normalizeStudentInput } from '../core/models.js';
 import { activeSeats } from '../core/grid.js';
 import { ANNOTATION_COLORS } from '../core/constants.js';
 
-/** 字段 -> 中英文表头别名 */
+/** field -> Chinese/English header aliases */
 const COLUMN_ALIASES = {
   name: ['姓名', '名字', '学生姓名', 'name'],
   gender: ['性别', 'gender', 'sex'],
@@ -36,7 +36,7 @@ function readAsArrayBuffer(file) {
 }
 
 /**
- * 解析 Excel/CSV 文件 → { headers, rows(二维数组), suggested(字段->列索引) }
+ * Parse an Excel/CSV file → { headers, rows (2D array), suggested (field -> column index) }
  */
 export async function parseTableFile(file) {
   const XLSX = await loadXlsx();
@@ -47,7 +47,7 @@ export async function parseTableFile(file) {
 
   if (!matrix.length) throw new Error('文件内容为空');
 
-  // 前 5 行内找表头：包含「姓名」或 name 的行
+  // Find the header row within the first 5 rows: the one containing 姓名 or name
   let headerRow = -1;
   for (let i = 0; i < Math.min(5, matrix.length); i++) {
     const cells = (matrix[i] || []).map(c => String(c).trim().toLowerCase());
@@ -60,7 +60,7 @@ export async function parseTableFile(file) {
     .map(r => headers.map((_, i) => String(r[i] ?? '').trim()))
     .filter(r => r.some(c => c !== ''));
 
-  // 字段映射建议
+  // Suggested field-to-column mapping
   const suggested = {};
   headers.forEach((h, i) => {
     const hl = h.toLowerCase();
@@ -73,7 +73,7 @@ export async function parseTableFile(file) {
   return { headers, rows, suggested };
 }
 
-/** 按映射把行转换为学生输入对象 */
+/** Convert rows into student input objects using the mapping */
 export function rowsToStudentInputs(rows, mapping) {
   const out = [];
   for (const row of rows) {
@@ -94,12 +94,12 @@ export function rowsToStudentInputs(rows, mapping) {
   return out.map(normalizeStudentInput);
 }
 
-/** 导出学生信息 + 座位安排 双 sheet */
+/** Export two sheets: student info + seating arrangement */
 export async function exportExcel(state) {
   const XLSX = await loadXlsx();
   const wb = XLSX.utils.book_new();
 
-  // Sheet1 学生信息
+  // Sheet 1: student info
   const annoLabel = Object.fromEntries(ANNOTATION_COLORS.map(c => [c.value, c.label]));
   const stuRows = state.students.list.map(s => ({
     '姓名': s.name, '性别': s.gender, '身高': s.height, '视力': s.vision,
@@ -108,7 +108,7 @@ export async function exportExcel(state) {
   }));
   XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(stuRows), '学生信息');
 
-  // Sheet2 座位安排（矩阵：座位列 + 过道间隙列）
+  // Sheet 2: seating arrangement (matrix: seat columns + aisle gap columns)
   const seats = activeSeats(state.layout);
   const seatMap = new Map(seats.map(s => [s.id, s]));
   const byId = new Map(state.students.list.map(s => [s.id, s]));
@@ -133,7 +133,7 @@ export async function exportExcel(state) {
   XLSX.writeFile(wb, `排座数据_${dateStr()}.xlsx`);
 }
 
-/** 下载导入模板（含示例与字段说明） */
+/** Download the import template (with sample rows and field notes) */
 export async function downloadTemplate() {
   const XLSX = await loadXlsx();
   const wb = XLSX.utils.book_new();

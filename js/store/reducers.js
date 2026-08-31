@@ -1,5 +1,5 @@
 /**
- * Reducer：按切片归并，返回 { state, changed }
+ * Reducer: merges by slice, returns { state, changed }
  */
 import { A } from './actions.js';
 import { defaultRules } from '../core/constants.js';
@@ -29,7 +29,7 @@ export function reducer(state, action) {
 
     case A.SET_STUDENTS: {
       const students = { list: action.list, nextId: action.nextId };
-      // 学生集合变化后：清理无效分配与关系
+      // After the roster changes: prune invalid assignments and relations
       const ids = new Set(students.list.map(s => s.id));
       const assignment = {};
       for (const [seat, sid] of Object.entries(state.assignment)) {
@@ -66,7 +66,7 @@ export function reducer(state, action) {
 
     case A.SET_LAYOUT: {
       const layout = normalizeLayout(action.layout);
-      // 布局变化：清理越界座位与锁定
+      // Layout change: drop out-of-bounds seats and locks
       const valid = new Set(activeSeats(layout).map(s => s.id));
       const assignment = {};
       for (const [seat, sid] of Object.entries(state.assignment)) {
@@ -81,11 +81,11 @@ export function reducer(state, action) {
 
     case A.ASSIGN: {
       const assignment = { ...state.assignment };
-      // 若该学生已在别处入座，先移除
+      // If the student is already seated elsewhere, remove that entry first
       for (const [seat, sid] of Object.entries(assignment)) {
         if (sid === action.studentId) delete assignment[seat];
       }
-      // 若目标座位有人，其学生回到未安排
+      // If the target seat is occupied, its student becomes unassigned
       delete assignment[action.seatId];
       assignment[action.seatId] = action.studentId;
       return done(state, { assignment }, ['assignment']);

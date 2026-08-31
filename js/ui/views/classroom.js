@@ -1,5 +1,6 @@
 /**
- * 教室视图：网格结构（布局变化时重建）+ 座位卡增量渲染（按 studentId 复用元素，FLIP 前提）
+ * Classroom view: grid structure (rebuilt on layout change) + incremental seat-card rendering
+ * (elements reused by studentId — the prerequisite for FLIP)
  */
 import { h, qs, qsa, clearEl, bindTooltip } from '../dom.js';
 import { withFlip } from '../interactions/flip.js';
@@ -16,11 +17,11 @@ export function createClassroomView(app) {
   let layoutSig = '';
   let selectedSeat = null;
 
-  /* ---------- 结构 ---------- */
+  /* ---------- Structure ---------- */
 
   function buildStructure(layout) {
     clearEl(grid);
-    // 网格列：座位列 + 过道间隙列（第 N 列之后有过道则插入间隙）
+    // Grid columns: seat columns + aisle gap columns (a gap is inserted after column N when an aisle follows it)
     const cols = [];
     for (let c = 1; c <= layout.seatCols; c++) {
       cols.push('var(--seat-size)');
@@ -50,7 +51,7 @@ export function createClassroomView(app) {
     grid.style.setProperty('--seat-size', size + 'px');
   }
 
-  /* ---------- 座位卡渲染 ---------- */
+  /* ---------- Seat card rendering ---------- */
 
   function makeCard(student) {
     const card = h('div', {
@@ -63,7 +64,7 @@ export function createClassroomView(app) {
       e.dataTransfer.setData('text/plain', `seat:${seatEl?.dataset.seatId ?? ''}`);
       e.dataTransfer.effectAllowed = 'move';
     });
-    // tooltip 只绑定一次，内容在悬浮时动态解析（避免每次渲染累积监听器）
+    // Tooltip is bound once; its content is resolved dynamically on hover (avoids piling up listeners on every render)
     bindTooltip(card, () => {
       const s = store.getState().students.list.find(x => x.id === +card.dataset.studentId);
       return s ? tooltipText(s) : '';
@@ -81,17 +82,18 @@ export function createClassroomView(app) {
     }
     clearEl(card);
 
-    // 职务：右上角小标签（完整显示，悬停看全部职务）
+    // Class duty: small badge at the top-right (shows the first one; hover to see all duties)
     if (student.tags.length) {
       card.append(h('span', { class: 'sc-badge', title: `职务：${student.tags.join('、')}` },
         student.tags[0]));
     }
 
-    // 姓名（绝对居中——图标行与职务为悬浮层，不影响姓名位置）
+    // Name (absolutely centered — the icon row and duty badge are overlay layers that don't affect its position)
     card.append(h('span', { class: 'sc-name' }, student.name));
 
-    // 图标行（卡片底部悬浮，含义见学生面板「?」图例说明；悬停单图标显示说明）
-    // 锁定标识不进图标行：由 .seat.locked 在卡片左上角/座位号处显示，避免 4 个图标换行挤压姓名
+    // Icon row (floating at the card bottom; meanings documented in the students panel "?" legend; hover an icon for its tooltip)
+    // The lock indicator stays out of the icon row: .seat.locked shows it at the card's top-left / seat number,
+    // so 4 icons never wrap and squeeze the name
     const icons = [];
     if (student.vision === '近视') icons.push(['👓', '近视：排座时优先前排']);
     if (student.height === '矮') icons.push(['🔻', '矮个：优先前排，避免被遮挡']);
@@ -119,7 +121,7 @@ export function createClassroomView(app) {
     const byId = new Map(state.students.list.map(s => [s.id, s]));
     const seatEls = qsa('.seat', grid);
 
-    // 现有卡片索引（studentId -> card），用于跨座位复用（FLIP 需要）
+    // Index of existing cards (studentId -> card), for reuse across seats (needed by FLIP)
     const cardsByStudent = new Map();
     for (const el of seatEls) {
       const card = el.querySelector('.student-card');
@@ -149,7 +151,7 @@ export function createClassroomView(app) {
     }
   }
 
-  /* ---------- 选择与交互 ---------- */
+  /* ---------- Selection & interaction ---------- */
 
   function clearSelection() {
     selectedSeat = null;
@@ -162,7 +164,7 @@ export function createClassroomView(app) {
     const seatId = seatEl.dataset.seatId;
     const state = store.getState();
 
-    // 锁定模式：点击即锁定/解锁
+    // Lock mode: clicking toggles the lock
     if (state.ui.lockMode) {
       history.exec(toggleLockCmd(seatId));
       toast.info(state.locks.includes(seatId)
@@ -181,7 +183,7 @@ export function createClassroomView(app) {
     }
     if (selectedSeat === seatId) { clearSelection(); return; }
 
-    // 交换：源/目标座位都做锁定校验
+    // Swap: validate locks on both the source and target seats
     if (state.locks.includes(seatId)) { toast.warning(`目标座位 ${seatName(seatId)} 已锁定，无法交换`); return; }
     if (state.locks.includes(selectedSeat)) { toast.warning(`选中座位 ${seatName(selectedSeat)} 已锁定，请先解锁`); clearSelection(); return; }
 
@@ -199,7 +201,7 @@ export function createClassroomView(app) {
     app.views.studentsPanel.editStudent(sid);
   });
 
-  /* ---------- 拖拽 ---------- */
+  /* ---------- Drag & drop ---------- */
 
   grid.addEventListener('dragover', e => {
     const seatEl = e.target.closest('.seat');
@@ -241,7 +243,7 @@ export function createClassroomView(app) {
     }
   });
 
-  /* ---------- 状态条 ---------- */
+  /* ---------- Status bar ---------- */
 
   function renderStatus() {
     const state = store.getState();
@@ -257,10 +259,10 @@ export function createClassroomView(app) {
       sum.locked ? h('span', { class: 'sb-item' }, `🔒 锁定 ${sum.locked}`) : null,
       sum.unseated > 0 ? h('span', { class: 'sb-item', style: { color: 'var(--warning)' } }, `未安排 ${sum.unseated}`) : null,
       h('span', { class: 'sb-item sb-save', id: 'saveState' }, '💾 已自动保存'),
-    ].filter(Boolean)); // Element.append 会把 null 渲染为字符串
+    ].filter(Boolean)); // Element.append would render null as a string
   }
 
-  /* ---------- 订阅 ---------- */
+  /* ---------- Subscriptions ---------- */
 
   store.subscribe('layout', () => { layoutSig = ''; render(); });
   store.subscribe('assignment', render);
@@ -276,7 +278,7 @@ export function createClassroomView(app) {
     fitSeatSize(layout);
   });
 
-  // 容器尺寸变化（侧栏折叠/窗口调整）时自适应座位大小
+  // Refit seat size when the container resizes (sidebar collapse / window resize)
   if (typeof ResizeObserver !== 'undefined') {
     let roTimer = null;
     new ResizeObserver(() => {

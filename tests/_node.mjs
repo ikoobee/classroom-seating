@@ -1,8 +1,8 @@
 /**
- * node 无头测试运行器（浏览器测试请打开 runner.html）
- * 用法：node tests/_node.mjs
+ * Node headless test runner (for browser tests, open runner.html instead)
+ * Usage: node tests/_node.mjs
  */
-// DOM / localStorage 最小 shim
+// Minimal DOM / localStorage shim
 globalThis.document = { getElementById: () => null };
 const mem = new Map();
 globalThis.localStorage = {

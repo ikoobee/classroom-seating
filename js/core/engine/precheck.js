@@ -1,5 +1,6 @@
 /**
- * 不可满足预检：fatal（无法出解，直接报错）/ warning（可出解但需明示）
+ * Unsatisfiability precheck: fatal (no solution possible, abort with error) /
+ * warning (a solution exists but the user must be told)
  */
 import { isDeskPair } from './context.js';
 
@@ -15,7 +16,7 @@ export function precheck(ctx) {
     fatal.push('没有可安排的学生');
   }
 
-  // 好友对几何可行性
+  // Geometric feasibility of friend pairs
   const availDeskEdges = ctx.deskEdges
     .filter(e => !ctx.locks.has(e.a.id) && !ctx.locks.has(e.b.id)).length;
   const movablePairs = ctx.relations.friends.filter(p =>
@@ -38,7 +39,7 @@ export function precheck(ctx) {
     }
   }
 
-  // 座位几何限制：一人只有一位同桌，共享学生的好友对不可能同时满足
+  // Seat geometry limit: one student has exactly one deskmate, so friend pairs sharing a student cannot all be satisfied
   const friendDegree = new Map();
   for (const p of ctx.relations.friends) {
     if (!ctx.byId.has(p.a) || !ctx.byId.has(p.b)) continue;
@@ -51,7 +52,7 @@ export function precheck(ctx) {
     }
   }
 
-  // 跨列表冲突：同一对学生既是好友（必须同桌）又在黑名单（禁止相邻），两约束矛盾
+  // Cross-list conflict: the same pair is both friends (must be deskmates) and blacklisted (must not be adjacent) — contradictory constraints
   for (const p of ctx.relations.friends) {
     if (!ctx.byId.has(p.a) || !ctx.byId.has(p.b)) continue;
     const clash = ctx.relations.blacklist.some(q =>
@@ -61,7 +62,7 @@ export function precheck(ctx) {
     }
   }
 
-  // 黑名单：双方锁定且仍相邻
+  // Blacklist: both sides locked yet still adjacent
   for (const p of ctx.relations.blacklist) {
     if (!ctx.byId.has(p.a) || !ctx.byId.has(p.b)) continue;
     if (ctx.lockedStudentIds.has(p.a) && ctx.lockedStudentIds.has(p.b)) {

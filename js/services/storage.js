@@ -1,5 +1,5 @@
 /**
- * localStorage 持久化：sm. 前缀、防抖写入、配额降级、备份环、日志详情 LRU
+ * localStorage persistence: "sm." key prefix, debounced writes, quota fallback, backup ring, LRU for log details
  */
 
 const PREFIX = 'sm.';
@@ -25,7 +25,7 @@ export function createStorage(onQuotaExceeded) {
       localStorage.setItem(k, JSON.stringify(value));
       return true;
     } catch {
-      // 配额降级：先清日志详情，再清最旧备份，最后重试一次
+      // Quota fallback: clear log details first, then the oldest backups, then retry once
       trimLogDetails(0);
       const backups = listBackupKeys();
       for (let i = 0; i < backups.length - 1 && i < 3; i++) localStorage.removeItem(backups[i]);
@@ -47,7 +47,7 @@ export function createStorage(onQuotaExceeded) {
     } catch { return null; }
   }
 
-  /* ---------- 状态读写 ---------- */
+  /* ---------- State read/write ---------- */
 
   function loadAll() {
     const state = {};
@@ -76,7 +76,7 @@ export function createStorage(onQuotaExceeded) {
     safeSet(key(K.logsIndex), state.logs);
   }
 
-  /* ---------- 日志详情（LRU 20 条） ---------- */
+  /* ---------- Log details (LRU of 20) ---------- */
 
   function setLogDetail(id, detail) {
     safeSet(detailKey(id), detail);
@@ -99,12 +99,12 @@ export function createStorage(onQuotaExceeded) {
   function trimLogDetails(keep) {
     const ids = detailIds();
     if (ids.length <= keep) return;
-    // detail id 内含时间戳，按字典序即时间序
+    // Detail ids embed a timestamp, so lexicographic order equals chronological order
     ids.sort();
     for (let i = 0; i < ids.length - keep; i++) localStorage.removeItem(ids[i]);
   }
 
-  /* ---------- 备份环（保留 5 个） ---------- */
+  /* ---------- Backup ring (keep 5) ---------- */
 
   function listBackupKeys() {
     const keys = [];
@@ -122,7 +122,7 @@ export function createStorage(onQuotaExceeded) {
       locks: state.locks, relations: state.relations, rules: state.rules,
       settings: state.settings, logs: state.logs, ts,
     });
-    // 只保留最近 5 个
+    // Keep only the 5 most recent
     const keys = listBackupKeys();
     for (let i = 0; i < keys.length - 5; i++) localStorage.removeItem(keys[i]);
     return ts;
@@ -152,7 +152,7 @@ export function createStorage(onQuotaExceeded) {
     for (let i = 0; i < localStorage.length; i++) {
       const k = localStorage.key(i);
       if (!k || !k.startsWith(PREFIX)) continue;
-      const size = (localStorage.getItem(k) || '').length * 2; // UTF-16 近似
+      const size = (localStorage.getItem(k) || '').length * 2; // UTF-16 approximation
       items.push({ key: k.slice(PREFIX.length), size });
       total += size;
     }

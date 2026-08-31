@@ -1,5 +1,5 @@
 /**
- * 评分报告模态框：总分 / 维度子分条形 / 违规明细 / 硬冲突与建议
+ * Score report modal: total score / dimension sub-score bars / violation details / hard conflicts and advice
  */
 import { h } from '../dom.js';
 import { openModal, closeModal } from '../components/modal.js';
@@ -7,7 +7,7 @@ import { dimBar } from '../components/charts.js';
 
 export function openReportModal(app, score, warnings = []) {
   const content = h('div', {},
-    // 总分
+    // Total score
     h('div', { class: 'score-hero' },
       h('div', {
         class: 'sh-num',
@@ -15,7 +15,7 @@ export function openReportModal(app, score, warnings = []) {
       }, String(score.total)),
       h('div', { class: 'sh-sub' }, '综合评分（0-100，软规则加权）')),
 
-    // 硬冲突
+    // Hard conflicts
     score.hardViolations.length ? h('div', { class: 'hard-block' },
       h('div', { style: { fontWeight: 600, marginBottom: 4 } }, `⛔ ${score.hardViolations.length} 项硬约束未满足`),
       score.hardViolations.map(v => h('div', {}, '• ' + v.msg)),
@@ -27,7 +27,7 @@ export function openReportModal(app, score, warnings = []) {
       warnings.map(w => h('div', {}, '• ' + w)),
     ) : null,
 
-    // 维度子分
+    // Dimension sub-scores
     h('div', { style: { margin: '16px 0 12px', fontWeight: 600, fontSize: 13.5 } }, '维度得分'),
     score.dimensions.length ? score.dimensions.map(d => h('div', { style: { marginBottom: 10 } },
       dimBar(d.name, d.score, d.weight),

@@ -1,5 +1,5 @@
 /**
- * 学生数据模型：创建 / 校验 / 导入归一化
+ * Student data model: creation / validation / import normalization
  */
 import {
   GENDERS, HEIGHTS, VISIONS, ACADEMICS, PERSONALITIES, ABILITIES, DUTIES,
@@ -19,7 +19,7 @@ export function createStudent(data = {}) {
     ability: ABILITIES.includes(data.ability) ? data.ability : '',
     tags: Array.isArray(data.tags) ? data.tags.filter(t => DUTIES.includes(t)) : [],
     annotationColor: ANNO_VALUES.includes(data.annotationColor) ? data.annotationColor : null,
-    zone: null, // 预留：指定区域硬约束 { rows: [min, max] }
+    zone: null, // reserved: zone hard constraint { rows: [min, max] }
   };
 }
 
@@ -36,7 +36,7 @@ function pick(list, value) {
   return list.find(x => x === v) || '';
 }
 
-/** 导入归一化：任意来源（Excel/CSV/JSON）→ 合法学生对象 */
+/** Import normalization: any source (Excel/CSV/JSON) → valid student object */
 export function normalizeStudentInput(input = {}) {
   const gender = String(input.gender ?? '').trim();
   const height = String(input.height ?? '').trim();

@@ -1,5 +1,5 @@
 /**
- * 非阻塞提示（替代 alert/confirm）
+ * Non-blocking toasts (replacement for alert/confirm)
  */
 import { h } from '../dom.js';
 
@@ -25,10 +25,10 @@ export const toast = {
   info(m, ms) { return this.show(m, 'info', ms); },
 };
 
-/** 确认对话框（Promise<boolean>，替代 confirm） */
+/** Confirmation dialog (Promise<boolean>, replacement for confirm) */
 export function confirmDialog({ title = '确认操作', message, danger = false, okText = '确定', cancelText = '取消' }) {
   return new Promise(resolve => {
-    // 延迟导入避免循环依赖
+    // Lazy import to avoid a circular dependency
     import('./modal.js').then(({ openModal, closeModal }) => {
       const modal = openModal({
         title: `${danger ? '⚠️' : '❓'} ${title}`,
@@ -42,7 +42,7 @@ export function confirmDialog({ title = '确认操作', message, danger = false,
           }, okText),
         ],
       });
-      modal.onClose = () => resolve(false); // Esc/遮罩关闭
+      modal.onClose = () => resolve(false); // Closed via Esc or overlay click
     });
   });
 }

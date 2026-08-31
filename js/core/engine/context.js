@@ -1,5 +1,6 @@
 /**
- * 引擎上下文：把应用状态（学生/布局/锁定/关系/规则）物化为算法友好的索引结构
+ * Engine context: materializes app state (students / layout / locks /
+ * relations / rules) into index structures friendly to the algorithms
  */
 import { activeSeats, deskEdges, frontBackEdges, frontRowCount } from '../grid.js';
 import { buildRelationIndex } from '../relations.js';
@@ -7,13 +8,13 @@ import { RULE_BY_ID } from '../constants.js';
 
 /**
  * @param cfg {{
- *   students: object[],            // 全部学生
+ *   students: object[],            // all students
  *   layout: {rows, seatCols, aisles},
- *   locks: Set<string>,            // 锁定的 seatId
- *   assignment: object,            // 当前 seatId -> studentId（锁定座位上的学生保持不动）
+ *   locks: Set<string>,            // locked seatIds
+ *   assignment: object,            // current seatId -> studentId (students on locked seats stay put)
  *   relations: {friends, blacklist},
  *   rules: {weights, order, frontRowRatio},
- *   prevAssignment: object|null,   // 上一次座位表（randomShuffle 维度用；无则 null）
+ *   prevAssignment: object|null,   // previous seating chart (used by the randomShuffle dimension; null if none)
  * }}
  */
 export function buildContext(cfg) {
@@ -22,7 +23,7 @@ export function buildContext(cfg) {
   const byId = new Map(cfg.students.map(s => [s.id, s]));
   const locks = cfg.locks instanceof Set ? cfg.locks : new Set(cfg.locks || []);
 
-  // 锁定座位及其学生（保持不动）
+  // Locked seats and their students (kept as-is)
   const lockedAssignment = {};
   const lockedStudentIds = new Set();
   for (const seatId of locks) {
@@ -34,12 +35,12 @@ export function buildContext(cfg) {
   }
   const lockedByStudent = new Map(Object.entries(lockedAssignment).map(([seat, sid]) => [sid, seat]));
 
-  // 可动座位 = 全部座位 - 锁定座位
+  // Movable seats = all seats - locked seats
   const seats = allSeats.filter(s => !locks.has(s.id));
-  // 可动学生 = 全部学生 - 锁定座位上的学生
+  // Movable students = all students - students on locked seats
   const students = cfg.students.filter(s => !lockedStudentIds.has(s.id));
 
-  // 规则（按 order 排序，权重 > 0 才参与）
+  // Rules (sorted by order; only weight > 0 takes part)
   const { weights = {}, order = [], frontRowRatio = 0.3 } = cfg.rules || {};
   const ruleOrder = order.length ? order : Object.keys(weights);
   const rules = ruleOrder
@@ -59,22 +60,22 @@ export function buildContext(cfg) {
     relations: cfg.relations || { friends: [], blacklist: [] },
     prevAssignment: cfg.prevAssignment || null,
 
-    // 预筛选群体
+    // Pre-filtered groups
     nearsighted: students.filter(s => s.vision === '近视'),
     naughty: students.filter(s => s.personality === '调皮'),
   };
 
-  // 同桌边索引（seatId 对 -> 边）；含锁定座位上的边（用于好友/黑名单判定）
+  // Deskmate edge index (seatId pair -> edge); includes edges on locked seats (needed for friend/blacklist checks)
   ctx.deskEdgeKey = new Set(ctx.deskEdges.map(e => `${e.a.id}|${e.b.id}`));
   return ctx;
 }
 
-/** seatId 是否与 seatId2 构成同桌边 */
+/** Whether seatId1 and seatId2 form a deskmate edge */
 export function isDeskPair(ctx, seatId1, seatId2) {
   return ctx.deskEdgeKey.has(`${seatId1}|${seatId2}`) || ctx.deskEdgeKey.has(`${seatId2}|${seatId1}`);
 }
 
-/** 找 seatId 的同桌座位 id */
+/** Find the deskmate seat id of seatId */
 export function deskmateOf(ctx, seatId) {
   for (const e of ctx.deskEdges) {
     if (e.a.id === seatId) return e.b.id;
