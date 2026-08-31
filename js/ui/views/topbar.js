@@ -16,18 +16,8 @@ export function createTopbar(app) {
   const { store, history, toast, arranger } = app;
   const root = document.getElementById('topbar');
 
-  const undoBtn = h('button', {
-    class: 'btn', title: '撤销 (Ctrl+Z)',
-    onclick: () => {
-      if (history.undo()) toast.info('已撤销'); else toast.info('没有可撤销的操作');
-    },
-  }, '↶ 撤销');
-  const redoBtn = h('button', {
-    class: 'btn', title: '重做 (Ctrl+Y)',
-    onclick: () => {
-      if (history.redo()) toast.info('已重做'); else toast.info('没有可重做的操作');
-    },
-  }, '↷ 重做');
+  const doUndo = () => { if (history.undo()) toast.info('已撤销'); else toast.info('没有可撤销的操作'); };
+  const doRedo = () => { if (history.redo()) toast.info('已重做'); else toast.info('没有可重做的操作'); };
 
   const scoreBadge = h('button', {
     class: 'score-badge', id: 'scoreBadge',
@@ -39,23 +29,6 @@ export function createTopbar(app) {
     },
   }, '📊 评分', h('span', { class: 'sb-num' }, '—'));
 
-  const lockBtn = h('button', {
-    class: 'btn', title: '锁定模式下点击座位即锁定/解锁，锁定的座位不参与智能排座与轮换',
-    onclick: () => {
-      const v = !store.getState().ui.lockMode;
-      store.dispatch({ type: 'PATCH_UI', patch: { lockMode: v } });
-      toast.info(v ? '已进入锁定模式：点击座位锁定/解锁' : '已退出锁定模式');
-    },
-  }, '🔓 锁定模式');
-
-  const themeBtn = h('button', {
-    class: 'btn btn-ghost', title: '切换明暗主题',
-    onclick: () => {
-      const cur = store.getState().settings.theme;
-      store.dispatch({ type: 'SET_SETTINGS', patch: { theme: cur === 'dark' ? 'light' : 'dark' } });
-    },
-  }, '🌙');
-
   root.append(
     h('div', { class: 'tb-logo' },
       h('span', { class: 'logo-ico' }, '🪑'), '智能排座',
@@ -66,6 +39,8 @@ export function createTopbar(app) {
         onclick: e => popupMenu(e.currentTarget, [
           { ico: '⚡', label: '一键智能排座', hint: '单方案', onClick: () => arranger.arrangeOnce() },
           { ico: '🏆', label: '生成候选方案…', hint: '多方案对比', onClick: () => arranger.arrangeCandidates(5) },
+          '-',
+          { ico: '🤝', label: '同学关系…', hint: '好友同桌 / 黑名单', onClick: () => openRelationsModal(app) },
         ]),
       }, '🎯 智能排座 ▾')),
     h('div', { class: 'dropdown' },
@@ -80,30 +55,42 @@ export function createTopbar(app) {
           { ico: '🕓', label: '轮换历史…', onClick: () => openRotationHistory(app) },
         ]),
       }, '🔄 轮换 ▾')),
-    undoBtn, redoBtn,
-    lockBtn,
-    h('span', { class: 'tb-sep' }),
     scoreBadge,
     h('span', { class: 'tb-spacer' }),
-    h('button', { class: 'btn', onclick: () => openDashboardModal(app) }, '📈 仪表盘'),
-    h('button', { class: 'btn', onclick: () => openRelationsModal(app) }, '🤝 关系'),
-    h('button', { class: 'btn', onclick: () => openLogModal(app) }, '📋 日志'),
-    h('button', { class: 'btn', onclick: () => openImportModal(app) }, '📥 导入'),
-    h('button', { class: 'btn', onclick: () => openExportModal(app) }, '📤 导出'),
-    h('button', { class: 'btn', onclick: () => openSettingsModal(app) }, '⚙️ 设置'),
-    themeBtn,
     h('button', {
-      class: 'btn', title: '保存 (Ctrl+S)',
-      onclick: () => { app.persistNow(); toast.success('已保存到浏览器本地存储'); },
-    }, '💾'),
+      class: 'btn btn-ghost', title: '更多操作',
+      onclick: e => popupMenu(e.currentTarget, [
+        { ico: '↶', label: '撤销', hint: 'Ctrl+Z', onClick: doUndo },
+        { ico: '↷', label: '重做', hint: 'Ctrl+Y', onClick: doRedo },
+        '-',
+        { ico: store.getState().ui.lockMode ? '🔒' : '🔓',
+          label: store.getState().ui.lockMode ? '退出锁定模式' : '锁定模式',
+          hint: '锁定座位不参与排座与轮换',
+          onClick: () => {
+            const v = !store.getState().ui.lockMode;
+            store.dispatch({ type: 'PATCH_UI', patch: { lockMode: v } });
+            toast.info(v ? '已进入锁定模式：点击座位锁定/解锁' : '已退出锁定模式');
+          } },
+        { ico: '📈', label: '统计仪表盘…', onClick: () => openDashboardModal(app) },
+        { ico: '📋', label: '操作日志…', onClick: () => openLogModal(app) },
+        '-',
+        { ico: '📥', label: '导入…', onClick: () => openImportModal(app) },
+        { ico: '📤', label: '导出…', onClick: () => openExportModal(app) },
+        { ico: '⚙️', label: '设置…', onClick: () => openSettingsModal(app) },
+        '-',
+        { ico: store.getState().settings.theme === 'dark' ? '☀️' : '🌙',
+          label: store.getState().settings.theme === 'dark' ? '浅色主题' : '深色主题',
+          onClick: () => {
+            const cur = store.getState().settings.theme;
+            store.dispatch({ type: 'SET_SETTINGS', patch: { theme: cur === 'dark' ? 'light' : 'dark' } });
+          } },
+        { ico: '💾', label: '立即保存', hint: 'Ctrl+S',
+          onClick: () => { app.persistNow(); toast.success('已保存到浏览器本地存储'); } },
+      ]),
+    }, '⋯'),
   );
 
   /* ---------- State sync ---------- */
-
-  function renderHistoryBtns() {
-    undoBtn.disabled = !history.canUndo();
-    redoBtn.disabled = !history.canRedo();
-  }
 
   function renderScore() {
     const score = store.getState().ui.lastScore;
@@ -115,15 +102,7 @@ export function createTopbar(app) {
     badge.querySelector('.sb-num').textContent = score ? String(score.total) : '—';
   }
 
-  function renderLockMode() {
-    const on = store.getState().ui.lockMode;
-    lockBtn.classList.toggle('btn-active', on);
-    lockBtn.textContent = on ? '🔒 锁定模式已开启' : '🔓 锁定模式';
-  }
-
-  store.subscribe('ui', () => { renderScore(); renderLockMode(); });
-  app.onHistoryChange = renderHistoryBtns;
-  renderHistoryBtns();
+  store.subscribe('ui', renderScore);
 
   return { renderScore };
 }

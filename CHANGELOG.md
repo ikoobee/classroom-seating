@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-09-01
+
+### Changed
+
+- **Topbar decluttered**: visible controls reduced from ~14 to 6 (logo, arrange menu, rotation menu, score badge, more menu). Relations moved into the arrange dropdown; undo / redo / lock mode / dashboard / logs / import / export / settings / theme / save now live in a single "more" (⋯) menu with shortcuts intact (Ctrl+Z/Y/S)
+
 ### Changed (seating-core 1.1.0)
 
 - Zone hard constraints fully wired: `createStudent` now accepts and normalizes a zone spec (`{ rows: [minRow, maxRow] }`) instead of discarding it; precheck reports zone capacity overflow (fatal), out-of-classroom ranges (warning with clamp) and locked-seat conflicts (warning); `precheck` is now part of the package's public API
