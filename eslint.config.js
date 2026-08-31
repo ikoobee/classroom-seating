@@ -25,11 +25,12 @@ export default [
   },
 
   {
-    files: ['tests/_node.mjs'],
+    files: ['tests/_node.mjs', 'scripts/**/*.mjs'],
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: 'module',
-      globals: { ...globals.node },
+      // scripts drive a browser from node (page.waitForFunction callbacks run in DOM context)
+      globals: { ...globals.node, ...globals.browser },
     },
   },
 ];

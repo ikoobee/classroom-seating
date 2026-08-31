@@ -7,6 +7,8 @@
 
 English | [简体中文](README.zh-CN.md)
 
+![Classroom seating chart with rule weights and student list](docs/screenshot.png)
+
 A zero-build, privacy-first seat planner for homeroom teachers. Pure vanilla JavaScript with ES Modules — no framework, no build step, no backend. All data stays in the browser's `localStorage`; open the page and start planning.
 
 Import a class roster, tune the rule weights, and the engine produces a seating chart in seconds that balances eyesight, height, grades, behavior, gender and peer relations — with fair rotation, multi-candidate comparison, scoring reports and one-click export.
