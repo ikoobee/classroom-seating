@@ -16,6 +16,13 @@
   <link rel="stylesheet" href="css/components.css?v=20260830c">
 </head>
 <body>
+  <div id="fileWarn" hidden style="margin:24px auto;max-width:640px;padding:16px 20px;border:1px solid #f59e0b;border-radius:10px;background:#fffbeb;color:#92400e;font:14px/1.8 system-ui,sans-serif;">
+    ⚠️ 检测到你直接双击打开了开发版页面——浏览器禁止 ES Modules 在 <code>file://</code> 下加载，所以内容空白。<br>
+    请任选其一：① 在项目根目录启动本地服务后访问 <code>http://localhost:8000</code>（如 <code>python -m http.server 8000</code>）；② 使用构建产物（单文件 HTML，可直接双击）。
+  </div>
+  <script>
+    if (location.protocol === 'file:') { const w = document.getElementById('fileWarn'); if (w) w.hidden = false; }
+  </script>
   <div id="app">
     <header id="topbar" class="topbar"></header>
     <div class="main-layout">
