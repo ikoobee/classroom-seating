@@ -119,7 +119,7 @@ classroom-seating/
 
 智能排座永久免费。如果它帮你省下了一节晚自习的时间，欢迎请作者喝杯咖啡：
 
-![微信赞赏](docs/donate/wechat.png) ![支付宝赞赏](docs/donate/alipay.png)
+![微信赞赏](docs/donate/donate-wechat.png) ![支付宝赞赏](docs/donate/donate-alipay.png)
 
 ## 🙏 致谢
 
