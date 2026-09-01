@@ -115,6 +115,12 @@ A commercial **Seating Pro** edition exists for teachers who need more: multi-cl
 
 **This free version keeps every feature you see here, forever** — the Pro edition only adds capabilities on top; nothing gets paywalled or taken away.
 
+## ☕ Support the Project
+
+Seating Planner is free forever. If it saved you an evening of manual seat shuffling, a coffee is the best encouragement:
+
+![WeChat](docs/donate/wechat.png) ![Alipay](docs/donate/alipay.png)
+
 ## 🙏 Acknowledgments
 
 - [SheetJS (xlsx) 0.18.5](https://sheetjs.com) — Apache-2.0. Vendored local copy (`assets/vendor/`) with CDN fallback, used for Excel import/export.

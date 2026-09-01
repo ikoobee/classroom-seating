@@ -11,6 +11,7 @@ import { openLogModal } from './logModal.js';
 import { openSettingsModal } from './settingsModal.js';
 import { openImportModal } from './importModal.js';
 import { openExportModal } from './exportModal.js';
+import { openDonateModal } from './donateModal.js';
 
 export function createTopbar(app) {
   const { store, history, toast, arranger } = app;
@@ -86,6 +87,8 @@ export function createTopbar(app) {
           } },
         { ico: '💾', label: '立即保存', hint: 'Ctrl+S',
           onClick: () => { app.persistNow(); toast.success('已保存到浏览器本地存储'); } },
+        '-',
+        { ico: '☕', label: '赞赏支持…', onClick: () => openDonateModal() },
       ]),
     }, '⋯'),
   );

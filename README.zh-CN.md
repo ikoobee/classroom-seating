@@ -115,6 +115,12 @@ classroom-seating/
 
 **免费版现有功能永久保留**——Pro 只在其上叠加能力，不会有任何功能被上锁或收回。
 
+## ☕ 赞赏支持
+
+智能排座永久免费。如果它帮你省下了一节晚自习的时间，欢迎请作者喝杯咖啡：
+
+![微信赞赏](docs/donate/wechat.png) ![支付宝赞赏](docs/donate/alipay.png)
+
 ## 🙏 致谢
 
 - [SheetJS (xlsx) 0.18.5](https://sheetjs.com) — Apache-2.0 许可证。本地副本（`assets/vendor/`）优先加载、失败回退 CDN，用于 Excel 导入导出。
