@@ -119,7 +119,10 @@ A commercial **Seating Pro** edition exists for teachers who need more: multi-cl
 
 Seating Planner is free forever. If it saved you an evening of manual seat shuffling, a coffee is the best encouragement:
 
-![WeChat](docs/donate/donate-wechat.png) ![Alipay](docs/donate/donate-alipay.png)
+<p align="center">
+  <img src="docs/donate/donate-wechat.png" width="220" alt="WeChat" />
+  <img src="docs/donate/donate-alipay.png" width="220" alt="Alipay" />
+</p>
 
 ## 🙏 Acknowledgments
 
