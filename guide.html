@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>智能排座系统使用说明 - 教室座位安排教程 - 智能排座</title>
+  <meta name="description" content="智能排座系统完整使用说明：三步完成班级排座，10 条排座规则权重调节、好友黑名单关系约束、五种座位轮换、Excel 导入导出、多方案对比择优，班主任排座位的得力工具。">
+  <meta name="keywords" content="智能排座,排座系统使用说明,教室排座位,班主任工具,座位安排,排座教程">
+  <link rel="canonical" href="https://ikoobee.github.io/classroom-seating/guide.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="智能排座系统使用说明 - 教室座位安排教程 - 智能排座">
+  <meta property="og:description" content="智能排座系统完整使用说明：三步完成班级排座，10 条排座规则权重调节、好友黑名单关系约束、五种座位轮换、Excel 导入导出、多方案对比择优，班主任排座位的得力工具。">
+  <meta property="og:url" content="https://ikoobee.github.io/classroom-seating/guide.html">
+  <meta property="og:image" content="https://ikoobee.github.io/classroom-seating/docs/screenshot.png">
+  <meta property="og:site_name" content="智能排座">
+  <meta property="og:locale" content="zh_CN">
+  <link rel="stylesheet" href="css/site.css?v=20260901a">
+</head>
+<body>
+  <header class="site-header">
+    <div class="inner">
+      <a class="site-logo" href="index.html">🪑 智能排座</a>
+      <nav class="site-nav">
+        <a href="index.html">排座系统</a>
+        <a href="guide.html" class="active">使用说明</a>
+        <a href="blog.html">博客</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="site-main">
+    <div class="site-breadcrumb"><a href="index.html">首页</a> / 使用说明</div>
+    <h1 class="article-title">智能排座系统使用说明</h1>
+    <div class="article-meta">适用版本 v1.2.0 · 数据保存在浏览器本地 · 无需安装、无需注册</div>
+    <div class="article-abstract">
+      本系统面向中小学班主任与任课教师，用加权评分算法自动完成教室座位安排：视力、身高、成绩、行为、性别等 10 条规则可自由调配权重，支持好友同桌、黑名单隔离、定期轮换与多方案对比，结果量化打分、可导出 Excel 与图片。
+    </div>
+
+    <h2>一、三步上手</h2>
+    <ol>
+      <li><strong>准备学生名单</strong>：点击右栏「🎲 演示数据」生成随机学生体验；正式使用时通过「⋯ 更多 → 📥 导入」导入真实名单——支持 Excel / CSV（中英文表头自动识别、列映射预览、可下载模板），覆盖姓名、性别、身高、视力、成绩、性格、特长、职务、标注 9 个字段。</li>
+      <li><strong>设置规则与教室</strong>：左栏 ⚖️ 拖动滑块调节 10 条规则的权重（0 为停用）与前排区比例；教室布局在「⋯ 更多 → ⚙️ 设置」中选择——内置标准（7 排×8 座）、小班（5 排×6 座）、大班（9 排×10 座）三套快速模板，也可自定义排数、每排座位数与过道位置。</li>
+      <li><strong>一键排座</strong>：顶栏「🎯 智能排座」立即生成方案；或选「生成候选方案」一次产出多个方案对比择优。</li>
+    </ol>
+
+    <h2>二、功能总览</h2>
+    <p>顶栏常驻 6 个控件（🎯 排座、🔄 轮换、📊 评分徽章、📖 说明、📝 博客、⋯ 更多），其余功能收纳在菜单里——下表即实际入口：</p>
+    <table>
+      <tr><th>功能</th><th>入口</th><th>说明</th></tr>
+      <tr><td>智能排座</td><td>顶栏 🎯 ▾</td><td>硬约束 + 权重评分 + 局部搜索优化，结果自动打分（0-100）</td></tr>
+      <tr><td>多方案对比</td><td>顶栏 🎯 → 生成候选方案</td><td>一次生成多个不同方案，迷你教室预览、择优应用</td></tr>
+      <tr><td>关系约束</td><td>顶栏 🎯 → 🤝 同学关系</td><td>好友（必须同桌，一人限一位）；黑名单（禁止同桌，可叠加禁止前后相邻）</td></tr>
+      <tr><td>评分报告</td><td>顶栏评分徽章</td><td>总分、10 维度子分、违规明细、硬冲突与建议</td></tr>
+      <tr><td>规则权重</td><td>左栏 ⚖️</td><td>视力保护 / 身高优化 / 行为管理 / 成绩分层 / 性别平衡 / 能力互补 / 避免同职务 / 性格平衡 / 随机打散 / 前排优先</td></tr>
+      <tr><td>座位轮换</td><td>顶栏 🔄 ▾</td><td>整体左移 / 右移、整排前移 / 后移、蛇形轮换；锁定座位自动保护；🕘 轮换历史可查</td></tr>
+      <tr><td>锁定座位</td><td>⋯ 更多 → 🔓 锁定模式</td><td>锁定模式下点击座位即锁定，排座与轮换时纹丝不动</td></tr>
+      <tr><td>统计仪表盘</td><td>⋯ 更多 → 📈</td><td>性别 / 身高 / 视力 / 成绩分布图表 + 座位热力图</td></tr>
+      <tr><td>教室布局</td><td>⋯ 更多 → ⚙️ 设置</td><td>三套快速模板（标准 / 小班 / 大班）或自定义排数、每排座位、过道位置</td></tr>
+      <tr><td>导入</td><td>⋯ 更多 → 📥</td><td>Excel / CSV（中英文表头、列映射预览、模板下载）；JSON 备份恢复（学生 + 座位 + 规则 + 关系）</td></tr>
+      <tr><td>导出</td><td>⋯ 更多 → 📤</td><td>Excel（学生信息 + 座位表两个工作表）、PNG 成品座位表（含标题图例，可打印）、JSON 完整备份</td></tr>
+      <tr><td>操作日志</td><td>⋯ 更多 → 📋</td><td>每次排座 / 轮换 / 手动调整自动记录，可导出</td></tr>
+      <tr><td>主题与保存</td><td>⋯ 更多</td><td>深色 / 浅色主题切换；改动自动保存到本地，Ctrl+S 立即保存</td></tr>
+    </table>
+
+    <h2>三、手动微调</h2>
+    <ul>
+      <li><strong>拖拽入座</strong>：从右栏学生列表拖到座位上；拖学生卡可在座位间交换</li>
+      <li><strong>点击交换</strong>：先点一个已占座位，再点另一个即可交换</li>
+      <li><strong>双击编辑</strong>：双击座位卡或学生项，打开学生资料编辑</li>
+      <li><strong>撤销重做</strong>：Ctrl+Z / Ctrl+Y，排座、交换、导入、轮换全部可撤销</li>
+    </ul>
+
+    <h2>四、座位卡图例</h2>
+    <ul>
+      <li>底部图标：👓 近视（优先前排）、🔻 矮个 / 🔺 高个、🌀 调皮（靠前管理）</li>
+      <li>锁定标识：卡片左上角 🔒 且座位边框变橙色，排座与轮换时该座位保持不动</li>
+      <li>右上角标签：职务（悬停查看全部）</li>
+      <li>左侧色条：红=重点关注、橙=需要注意、黄=一般关注、绿=表现良好、紫=特殊情况</li>
+      <li>边框底色：蓝框淡蓝底=男生，粉框淡粉底=女生</li>
+    </ul>
+
+    <h2>五、常见问题</h2>
+    <h3>1. 数据存在哪里？换电脑怎么办？</h3>
+    <p>数据保存在当前浏览器的本地存储（localStorage），不上传任何服务器，改动会自动保存（Ctrl+S 可立即保存）。换电脑或换浏览器前，请用「⋯ 更多 → 📤 导出 → JSON 备份」保存文件，在新设备「⋯ 更多 → 📥 导入 → JSON 备份恢复」。</p>
+    <h3>2. 为什么有的好友没有同桌？</h3>
+    <p>一个座位只有一位同桌，因此一名学生只能有一条好友约束；如需更换请先删除原配对。系统在添加时会自动拦截冲突组合。</p>
+    <h3>3. 前排区比例是什么？</h3>
+    <p>前排区 = 排数 × 前排比例，是「视力保护 / 行为管理 / 前排优先」三条规则共用的优先区域。默认 30%，可按班级情况在左栏调节。</p>
+    <h3>4. 排座结果不满意怎么办？</h3>
+    <p>查看评分报告定位短板维度（如身高有序度低），调高对应规则权重后重新排座；或使用「生成候选方案」对比多个方案择优。手动微调后评分徽章会实时更新。</p>
+
+    <div class="cta-card">
+      <h3>准备好了？立即开始排座</h3>
+      <p>免费、免安装、数据本地保存的教室排座工具</p>
+      <a class="cta-btn" href="index.html">打开智能排座系统 →</a>
+    </div>
+
+    <div class="related">
+      <h3>📚 排座博客 · 方法与实践</h3>
+      <a href="blog.html">博客首页：教室座位安排的方法、原则与工具实践</a>
+      <a href="blog/pai-zuo-yuanze-quanji.html">智能排座原则全解：视力、身高、成绩、行为如何权衡</a>
+      <a href="blog/zuowei-lunhuan-zhidu.html">座位轮换制度怎么做才公平？五种轮换方式对比</a>
+      <a href="blog/tongzhuo-pipei-jiqiao.html">同桌搭配的艺术：互补原则与关系约束</a>
+      <a href="blog/paizuo-gongju-xuanze.html">班主任排座位工具怎么选？Excel 手排 vs 智能排座系统</a>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    智能排座 · 纯前端教室座位安排工具 · <a href="index.html">排座系统</a> · <a href="guide.html">使用说明</a> · <a href="blog.html">博客</a>
+  </footer>
+</body>
+</html>
