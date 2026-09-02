@@ -58,6 +58,14 @@ export function createTopbar(app) {
       }, '🔄 轮换 ▾')),
     scoreBadge,
     h('span', { class: 'tb-spacer' }),
+    h('a', {
+      class: 'btn btn-ghost', href: 'guide.html', target: '_blank', rel: 'noopener',
+      title: '打开使用说明（新标签页）',
+    }, '📖 说明'),
+    h('a', {
+      class: 'btn btn-ghost', href: 'blog.html', target: '_blank', rel: 'noopener',
+      title: '排座方法与实践（新标签页）',
+    }, '📝 博客'),
     h('button', {
       class: 'btn btn-ghost', title: '更多操作',
       onclick: e => popupMenu(e.currentTarget, [
