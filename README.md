@@ -56,6 +56,11 @@ The project is a pure static site and **must be served over HTTP** (ES Modules d
 
 > Deploying: push to any static host (GitHub Pages / Cloudflare Pages / Vercel) — no build configuration needed.
 
+### 📖 Docs & Blog
+
+- [User Guide](guide.html) (Chinese) — step-by-step tutorial, feature map, FAQ
+- [Seating Blog](blog.html) (Chinese) — methodology articles: seating principles, fair rotation, deskmate pairing, tool comparison
+
 ## 🧪 Tests
 
 ```bash
