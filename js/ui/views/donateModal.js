@@ -7,11 +7,13 @@ import { h } from '../dom.js';
 import { openModal, closeModal } from '../components/modal.js';
 
 function qrCard(title, src, fallbackText) {
+  // The composed image already carries a platform-colored label banner,
+  // so no extra title row is rendered here.
   const img = h('img', {
-    src, alt: `${title} 赞赏码`, class: 'donate-qr',
+    src, alt: `${title}赞赏码`, class: 'donate-qr',
     onerror: () => { img.replaceWith(h('div', { class: 'donate-qr donate-missing' }, fallbackText)); },
   });
-  return h('div', { class: 'donate-card' }, h('div', { class: 'donate-title' }, title), img);
+  return h('div', { class: 'donate-card' }, img);
 }
 
 export function openDonateModal() {

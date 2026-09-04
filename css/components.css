@@ -437,6 +437,6 @@ details.fold[open] summary { margin-bottom: 8px; }
 .donate-note { text-align: center; font-size: 13px; color: var(--text-2); line-height: 1.8; margin-bottom: 14px; }
 .donate-row { display: flex; gap: 14px; justify-content: center; }
 .donate-card { text-align: center; }
-.donate-title { font-size: 12.5px; color: var(--text-2); margin-bottom: 8px; }
-.donate-qr { width: 168px; height: 168px; border: 1px solid var(--border); border-radius: 10px; object-fit: contain; background: #fff; }
+/* Composed card image: platform label + QR, aspect ~640x704 → width-driven, height auto */
+.donate-qr { width: 168px; height: auto; border: 1px solid var(--border); border-radius: 10px; object-fit: contain; background: #fff; }
 .donate-missing { display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--text-3); padding: 8px; box-sizing: border-box; }
