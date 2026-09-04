@@ -125,8 +125,8 @@ classroom-seating/
 智能排座永久免费。如果它帮你省下了一节晚自习的时间，欢迎请作者喝杯咖啡：
 
 <p align="center">
-  <img src="docs/donate/donate-wechat.png" width="220" alt="微信赞赏" />
-  <img src="docs/donate/donate-alipay.png" width="220" alt="支付宝赞赏" />
+  <img src="docs/donate/donate-wechat-labeled.png" width="220" alt="微信赞赏" />
+  <img src="docs/donate/donate-alipay-labeled.png" width="220" alt="支付宝赞赏" />
 </p>
 
 ## 🙏 致谢
