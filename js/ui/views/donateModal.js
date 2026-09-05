@@ -26,8 +26,8 @@ export function openDonateModal() {
         h('br'),
         '一杯咖啡就是对作者最好的鼓励 ☕'),
       h('div', { class: 'donate-row' },
-        qrCard('微信赞赏', 'docs/donate/donate-wechat.png', '微信赞赏码（待补充图片）'),
-        qrCard('支付宝赞赏', 'docs/donate/donate-alipay.png', '支付宝赞赏码（待补充图片）'))),
+        qrCard('微信赞赏', 'docs/donate/donate-wechat-labeled.png', '微信赞赏码（待补充图片）'),
+        qrCard('支付宝赞赏', 'docs/donate/donate-alipay-labeled.png', '支付宝赞赏码（待补充图片）'))),
     footer: [h('button', { class: 'btn', onclick: () => closeModal(modal) }, '关闭')],
   });
   return modal;
