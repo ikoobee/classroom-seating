@@ -1,0 +1,13 @@
+#!/bin/sh
+# Reject commit messages crediting Claude as co-author or generator.
+# Workspace rule (d:\Workspace\CLAUDE.md): commit messages never carry
+# Claude trailers — keeps Claude off the GitHub contributor graph.
+# This hook overrides the harness default that instructs adding them.
+if grep -qiE "Co-Authored-By:.*Claude|Generated with Claude" "$1"; then
+  echo "ERROR: commit message mentions Claude as co-author/credit." >&2
+  echo "Workspace rule: no 'Co-Authored-By: Claude' or 'Generated with" >&2
+  echo "Claude Code' trailers in any commit message." >&2
+  echo "" >&2
+  echo "Fix: git commit --amend (remove the trailer line(s)), or re-commit." >&2
+  exit 1
+fi
