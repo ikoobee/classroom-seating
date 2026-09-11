@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://ikoobee.github.io/classroom-seating/</loc>
+    <loc>https://seating.ikoobee.com/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://ikoobee.github.io/classroom-seating/guide.html</loc>
+    <loc>https://seating.ikoobee.com/guide.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://ikoobee.github.io/classroom-seating/blog.html</loc>
+    <loc>https://seating.ikoobee.com/blog.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://ikoobee.github.io/classroom-seating/blog/pai-zuo-yuanze-quanji.html</loc>
+    <loc>https://seating.ikoobee.com/blog/pai-zuo-yuanze-quanji.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://ikoobee.github.io/classroom-seating/blog/zuowei-lunhuan-zhidu.html</loc>
+    <loc>https://seating.ikoobee.com/blog/zuowei-lunhuan-zhidu.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://ikoobee.github.io/classroom-seating/blog/tongzhuo-pipei-jiqiao.html</loc>
+    <loc>https://seating.ikoobee.com/blog/tongzhuo-pipei-jiqiao.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://ikoobee.github.io/classroom-seating/blog/paizuo-gongju-xuanze.html</loc>
+    <loc>https://seating.ikoobee.com/blog/paizuo-gongju-xuanze.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
