@@ -54,7 +54,7 @@ The project is a pure static site and **must be served over HTTP** (ES Modules d
 4. Hit **🎯 Auto Arrange ▾**, tune the 10 rule weights (0 = off) and the front-row ratio in the left panel, re-arrange to see the effect.
 5. Use **🔄 Rotate** for fair rotation and **🤝 Relations** to manage friends and blacklists.
 
-> Deploying: push to any static host (GitHub Pages / Cloudflare Pages / Vercel) — no build configuration needed.
+> Deploying: push to any static host — no build configuration needed. For Cloudflare Pages: `bash tools/deploy.sh` (project config in `wrangler.toml`; the upload surface is trimmed by `.assetsignore`).
 
 ### 📖 Docs & Blog
 

@@ -54,7 +54,7 @@
 4. 顶栏 **🎯 智能排座 ▾** 一键排座，左栏调节 **10 条规则权重**（0 = 停用）与 **前排区比例**，重新排座立见效果
 5. 顶栏 **🔄 轮换** 做公平轮换，**🤝 关系** 维护好友与黑名单
 
-> 部署：直接推送到任意静态托管（GitHub Pages / Cloudflare Pages / Vercel 等），无需任何构建配置。
+> 部署：纯静态站点，推任意静态托管即可。Cloudflare Pages 一键部署：`bash tools/deploy.sh`（项目配置见 `wrangler.toml`，上传范围由 `.assetsignore` 裁剪）。
 
 ### 📖 文档与博客
 
